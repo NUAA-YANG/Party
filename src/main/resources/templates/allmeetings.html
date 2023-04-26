@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="c_fragment :: head(~{::title})">
+    <meta charset="UTF-8">
+    <!--宽度等于屏幕的宽度 不缩放 便于在pc端和移动端查看  -->
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>三会一课</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <link rel="stylesheet" href="../static/css/me.css">
+</head>
+<body>
+
+<!--导航 inverted表示黑白与否 attached圆角与否 segment形成一个分段-->
+<nav th:insert="c_fragment :: menu(4)"></nav>
+
+<!--二级导航模块-->
+<th:block th:if="${activeMtype}==1">
+    <div th:insert="c_fragment :: menuTwo(1)"></div>
+</th:block>
+<th:block th:if="${activeMtype}==2">
+    <div th:insert="c_fragment :: menuTwo(2)"></div>
+</th:block>
+<th:block th:if="${activeMtype}==3">
+    <div th:insert="c_fragment :: menuTwo(3)"></div>
+</th:block>
+<th:block th:if="${activeMtype}==4">
+    <div th:insert="c_fragment :: menuTwo(4)"></div>
+</th:block>
+<th:block th:if="${activeMtype}==5">
+    <div th:insert="c_fragment :: menuTwo(5)"></div>
+</th:block>
+
+
+<!--中间内容-->
+<div class="m-padded-tb-big m-container-bigger">
+
+    <!--中间的文章模块 -->
+    <div class="ui  attached segment stackable">
+        <div class="ui four column grid" th:fragment="allMeetingList">
+            <div class="column m-padded-lr-card-Small" th:each="meetingOne:${page.content}">
+                <div class="ui fluid card" >
+<!--                    <div class="image">-->
+<!--                        <img src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.17sort.com%2Fuploads%2F20210610%2F0e16df01a5e6ddd3caf9a214500a95d9.jpg&refer=http%3A%2F%2Fimg.17sort.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1646728057&t=8886af3c6a9d90469c49358461abc5e3">-->
+<!--                    </div>-->
+                    <div class="content">
+                        <a th:href="@{/personShow/meeting/{id}(id=${meetingOne.getId()})}" class="header" target="_blank" th:text="${meetingOne.getTitle()}">党课学习</a>
+                        <br>
+                        <div class=" m-margin-tb-middle">
+                            <h4  th:text="${meetingOne.getMtype()}">软件工程+大数据</h4>
+                        </div>
+
+                        <th:block th:each="adminOne:${listAdmin}">
+                            <th:block th:if="${adminOne.getId()==meetingOne.getAdmin_id()}">
+                                <div class="meta m-margin-tb-mtine ">
+                                    <i class="icon address book outline" ></i> 发布者：[[${adminOne.getName()}]]
+                                </div>
+                            </th:block>
+                        </th:block>
+                        <div class="meta m-margin-tb-mtine ">
+                            <i class="icon calendar alternate outline" ></i> 时间：[[${#dates.format(meetingOne.getStarttime(),'yyyy-MM-dd HH:mm')}]] 至  [[${#dates.format(meetingOne.getEndtime(),'yyyy-MM-dd HH:mm')}]]
+                        </div>
+                        <div class="meta m-margin-tb-mtine">
+                            <i class="icon map marker alternate" ></i> 地点：[[${meetingOne.getAddress()}]]
+                        </div>
+                        <div class="meta m-margin-tb-mtine">
+                            <i class="icon user"></i> 参会人数：[[${meetingOne.getNums()}]]
+                        </div>
+                    </div>
+                    <div class="extra content">
+                        <th:block th:if="(${#dates.format(new java.util.Date().getTime(), 'yyyy-MM-dd HH:mm')}>=${#dates.format(meetingOne.getStarttime(),'yyyy-MM-dd HH:mm')}) ">
+                            <th:block th:if="(${#dates.format(new java.util.Date().getTime(), 'yyyy-MM-dd HH:mm')}<=${#dates.format(meetingOne.getEndtime(),'yyyy-MM-dd HH:mm')})">
+                                <span class="teal"><i class="pause teal icon "></i> 正在进行中 </span>
+                            </th:block>
+                        </th:block>
+                            <th:block th:if="(${#dates.format(new java.util.Date().getTime(), 'yyyy-MM-dd HH:mm')}<${#dates.format(meetingOne.getStarttime(),'yyyy-MM-dd HH:mm')}) ">
+                                <span ><i class="play grey icon"></i> 未开始</span>
+                            </th:block>
+                        <th:block th:if="(${#dates.format(new java.util.Date().getTime(), 'yyyy-MM-dd HH:mm')}>${#dates.format(meetingOne.getEndtime(),'yyyy-MM-dd HH:mm')})">
+                            <span><i class="undo alternate red icon"></i> 已结束 </span>
+                        </th:block>
+                        <a  class="right floated" target="_blank" th:href="@{/personShow/meeting/{id}(id=${meetingOne.getId()})}"> 查看详情<i class="icon chevron right"></i> </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!--尾部的模块-->
+    <div class="ui segment attached bottom" th:if="${page.getTotalPages()}>1">
+        <div class="ui grid" >
+            <div class="ui three wide column" >
+                <a th:href="@{/personShow/allMeetings/{mtype}(mtype=${activeMtype})} + '/?page=0' " class="ui teal basic button" >首页</a>
+            </div>
+
+            <!--如果有上一页，存在链接-->
+            <div class="ui three wide column" th:if="${page.hasPrevious()}">
+                <!--teal选定颜色 basic不要填充颜色-->
+                <a th:href="@{/personShow/allMeetings/{mtype}(mtype=${activeMtype})} + '/?page='+(${page.number}-1)" class="ui teal basic button">上一页</a>
+            </div>
+
+            <!--如果没有上一页，不存在链接-->
+            <div class="ui three wide column" th:if="!${page.hasPrevious()}">
+                <!--teal选定颜色 basic不要填充颜色-->
+                <a  class="ui teal basic button">上一页</a>
+            </div>
+
+            <div class="ui four wide column middle aligned">
+                当前第 [[${page.number}+1]]页/共 [[${page.getTotalPages()}]] 页
+            </div>
+
+            <div class="ui three wide column" th:if="${page.hasNext()}">
+                <a th:href="@{/personShow/allMeetings/{mtype}(mtype=${activeMtype})} + '/?page='+(${page.number}+1)" class="ui teal basic button">下一页</a>
+            </div>
+
+            <div class="ui three wide column" th:if="!${page.hasNext()}">
+                <a  class="ui teal basic button">下一页</a>
+            </div>
+
+            <div class="ui three wide column right aligned" >
+                <a th:href="@{/personShow/allMeetings/{mtype}(mtype=${activeMtype})} + '/?page='+(${page.getTotalPages()}-1)" class="ui teal basic button" >尾页</a>
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+
+
+<!--底部footer-->
+<footer th:insert="c_fragment :: footer"></footer>
+
+
+<th:block th:insert="c_fragment::script"></th:block>
+
+
+<!--通过class获得按钮，当我们触发按钮的时候来取消或者添加相应的样式
+用于移动端展示目录的按钮，但是pc端没有-->
+<script>
+    $('.menu-button').click(function () {
+        $('.menu-control').toggleClass('m-mobile-hide');
+    });
+
+    /*点击头像弹出注销的下拉框*/
+    $('.ui.dropdown')
+        .dropdown();
+</script>
+</body>
+</html>

@@ -1,0 +1,186 @@
+2023-03-08 19:59:15.582  INFO 2352 --- [restartedMain] com.yzx.party.PartyApplication           : Starting PartyApplication on LAPTOP-5B0BBR9Q with PID 2352 (D:\IDEA\party\target\classes started by 29973 in D:\IDEA\party)
+2023-03-08 19:59:15.589 DEBUG 2352 --- [restartedMain] com.yzx.party.PartyApplication           : Running with Spring Boot v2.3.7.RELEASE, Spring v5.2.12.RELEASE
+2023-03-08 19:59:15.589  INFO 2352 --- [restartedMain] com.yzx.party.PartyApplication           : No active profile set, falling back to default profiles: default
+2023-03-08 19:59:15.632  INFO 2352 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2023-03-08 19:59:15.632  INFO 2352 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2023-03-08 19:59:16.366  INFO 2352 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2023-03-08 19:59:16.471  INFO 2352 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 99ms. Found 14 JPA repository interfaces.
+2023-03-08 19:59:17.107  INFO 2352 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8888 (http)
+2023-03-08 19:59:17.115  INFO 2352 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2023-03-08 19:59:17.115  INFO 2352 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.41]
+2023-03-08 19:59:17.272  INFO 2352 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2023-03-08 19:59:17.273  INFO 2352 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1640 ms
+2023-03-08 19:59:17.477  INFO 2352 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2023-03-08 19:59:17.634  INFO 2352 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2023-03-08 19:59:17.669  INFO 2352 --- [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2023-03-08 19:59:17.699  INFO 2352 --- [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.4.25.Final
+2023-03-08 19:59:17.782  INFO 2352 --- [restartedMain] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2023-03-08 19:59:17.857  INFO 2352 --- [restartedMain] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL57Dialect
+2023-03-08 19:59:18.380  INFO 2352 --- [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2023-03-08 19:59:18.389  INFO 2352 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2023-03-08 19:59:19.978  WARN 2352 --- [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2023-03-08 19:59:20.125  INFO 2352 --- [restartedMain] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2023-03-08 19:59:20.226  INFO 2352 --- [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2023-03-08 19:59:20.629  INFO 2352 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2023-03-08 19:59:20.672  INFO 2352 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8888 (http) with context path ''
+2023-03-08 19:59:20.683  INFO 2352 --- [restartedMain] com.yzx.party.PartyApplication           : Started PartyApplication in 5.449 seconds (JVM running for 7.693)
+2023-03-08 19:59:40.396  INFO 2352 --- [http-nio-8888-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2023-03-08 19:59:40.397  INFO 2352 --- [http-nio-8888-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2023-03-08 19:59:40.409  INFO 2352 --- [http-nio-8888-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 12 ms
+2023-03-08 20:00:34.485 DEBUG 2352 --- [http-nio-8888-exec-2] c.y.p.m.NewsChartTwoMapper.radarNews     : ==>  Preparing: select one.id id,one.name,one.nums,one.viewsNum,coalesce(two.numComments,'0') commentsNum from (select c.id id,c.name name,count(n.college_id) nums,sum(views) viewsNum from t_colleges c,t_news n where (c.id=n.college_id) group by c.id limit ?) one left outer join (select colleges.id id,count(comments.id) numComments from t_comments comments,t_colleges colleges where colleges.id=comments.college_id GROUP BY comments.college_id ) two on one.id=two.id 
+2023-03-08 20:00:34.491 DEBUG 2352 --- [http-nio-8888-exec-2] c.y.p.m.NewsChartTwoMapper.radarNews     : ==> Parameters: 7(Integer)
+2023-03-08 20:00:34.538 DEBUG 2352 --- [http-nio-8888-exec-2] c.y.p.m.NewsChartTwoMapper.radarNews     : <==      Total: 5
+2023-03-08 20:00:56.884 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.listCollege_id                 : ==>  Preparing: select p.college_id from t_persons p group by p.college_id 
+2023-03-08 20:00:56.884 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.listCollege_id                 : ==> Parameters: 
+2023-03-08 20:00:56.900 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.listCollege_id                 : <==      Total: 6
+2023-03-08 20:00:56.902 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==>  Preparing: select c.id,c.name,p.appearance,COUNT(p.appearance) countapp from (select id,name from t_colleges) c,t_persons p where p.college_id=c.id and c.id=? and p.appearance=? GROUP BY p.college_id order by p.college_id 
+2023-03-08 20:00:56.902 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==> Parameters: 2(Integer), officialM(String)
+2023-03-08 20:00:56.904 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : <==      Total: 1
+2023-03-08 20:00:56.904 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==>  Preparing: select c.id,c.name,p.appearance,COUNT(p.appearance) countapp from (select id,name from t_colleges) c,t_persons p where p.college_id=c.id and c.id=? and p.appearance=? GROUP BY p.college_id order by p.college_id 
+2023-03-08 20:00:56.904 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==> Parameters: 2(Integer), prepareM(String)
+2023-03-08 20:00:56.907 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : <==      Total: 1
+2023-03-08 20:00:56.907 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==>  Preparing: select c.id,c.name,p.appearance,COUNT(p.appearance) countapp from (select id,name from t_colleges) c,t_persons p where p.college_id=c.id and c.id=? and p.appearance=? GROUP BY p.college_id order by p.college_id 
+2023-03-08 20:00:56.907 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==> Parameters: 2(Integer), positiveM(String)
+2023-03-08 20:00:56.908 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : <==      Total: 1
+2023-03-08 20:00:56.910 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==>  Preparing: select c.id,c.name,p.appearance,COUNT(p.appearance) countapp from (select id,name from t_colleges) c,t_persons p where p.college_id=c.id and c.id=? and p.appearance=? GROUP BY p.college_id order by p.college_id 
+2023-03-08 20:00:56.910 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==> Parameters: 3(Integer), officialM(String)
+2023-03-08 20:00:56.911 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : <==      Total: 1
+2023-03-08 20:00:56.911 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==>  Preparing: select c.id,c.name,p.appearance,COUNT(p.appearance) countapp from (select id,name from t_colleges) c,t_persons p where p.college_id=c.id and c.id=? and p.appearance=? GROUP BY p.college_id order by p.college_id 
+2023-03-08 20:00:56.911 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==> Parameters: 3(Integer), prepareM(String)
+2023-03-08 20:00:56.912 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : <==      Total: 1
+2023-03-08 20:00:56.912 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==>  Preparing: select c.id,c.name,p.appearance,COUNT(p.appearance) countapp from (select id,name from t_colleges) c,t_persons p where p.college_id=c.id and c.id=? and p.appearance=? GROUP BY p.college_id order by p.college_id 
+2023-03-08 20:00:56.913 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==> Parameters: 3(Integer), positiveM(String)
+2023-03-08 20:00:56.914 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : <==      Total: 1
+2023-03-08 20:00:56.916 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==>  Preparing: select c.id,c.name,p.appearance,COUNT(p.appearance) countapp from (select id,name from t_colleges) c,t_persons p where p.college_id=c.id and c.id=? and p.appearance=? GROUP BY p.college_id order by p.college_id 
+2023-03-08 20:00:56.916 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==> Parameters: 5(Integer), officialM(String)
+2023-03-08 20:00:56.917 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : <==      Total: 1
+2023-03-08 20:00:56.919 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==>  Preparing: select c.id,c.name,p.appearance,COUNT(p.appearance) countapp from (select id,name from t_colleges) c,t_persons p where p.college_id=c.id and c.id=? and p.appearance=? GROUP BY p.college_id order by p.college_id 
+2023-03-08 20:00:56.919 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==> Parameters: 5(Integer), prepareM(String)
+2023-03-08 20:00:56.920 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : <==      Total: 1
+2023-03-08 20:00:56.921 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==>  Preparing: select c.id,c.name,p.appearance,COUNT(p.appearance) countapp from (select id,name from t_colleges) c,t_persons p where p.college_id=c.id and c.id=? and p.appearance=? GROUP BY p.college_id order by p.college_id 
+2023-03-08 20:00:56.922 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==> Parameters: 5(Integer), positiveM(String)
+2023-03-08 20:00:56.923 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : <==      Total: 1
+2023-03-08 20:00:56.925 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==>  Preparing: select c.id,c.name,p.appearance,COUNT(p.appearance) countapp from (select id,name from t_colleges) c,t_persons p where p.college_id=c.id and c.id=? and p.appearance=? GROUP BY p.college_id order by p.college_id 
+2023-03-08 20:00:56.925 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==> Parameters: 6(Integer), officialM(String)
+2023-03-08 20:00:56.926 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : <==      Total: 1
+2023-03-08 20:00:56.927 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==>  Preparing: select c.id,c.name,p.appearance,COUNT(p.appearance) countapp from (select id,name from t_colleges) c,t_persons p where p.college_id=c.id and c.id=? and p.appearance=? GROUP BY p.college_id order by p.college_id 
+2023-03-08 20:00:56.927 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==> Parameters: 6(Integer), prepareM(String)
+2023-03-08 20:00:56.927 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : <==      Total: 1
+2023-03-08 20:00:56.927 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==>  Preparing: select c.id,c.name,p.appearance,COUNT(p.appearance) countapp from (select id,name from t_colleges) c,t_persons p where p.college_id=c.id and c.id=? and p.appearance=? GROUP BY p.college_id order by p.college_id 
+2023-03-08 20:00:56.928 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==> Parameters: 6(Integer), positiveM(String)
+2023-03-08 20:00:56.928 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : <==      Total: 1
+2023-03-08 20:00:56.930 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==>  Preparing: select c.id,c.name,p.appearance,COUNT(p.appearance) countapp from (select id,name from t_colleges) c,t_persons p where p.college_id=c.id and c.id=? and p.appearance=? GROUP BY p.college_id order by p.college_id 
+2023-03-08 20:00:56.930 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==> Parameters: 26(Integer), officialM(String)
+2023-03-08 20:00:56.931 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : <==      Total: 1
+2023-03-08 20:00:56.932 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==>  Preparing: select c.id,c.name,p.appearance,COUNT(p.appearance) countapp from (select id,name from t_colleges) c,t_persons p where p.college_id=c.id and c.id=? and p.appearance=? GROUP BY p.college_id order by p.college_id 
+2023-03-08 20:00:56.932 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==> Parameters: 26(Integer), prepareM(String)
+2023-03-08 20:00:56.933 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : <==      Total: 1
+2023-03-08 20:00:56.934 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==>  Preparing: select c.id,c.name,p.appearance,COUNT(p.appearance) countapp from (select id,name from t_colleges) c,t_persons p where p.college_id=c.id and c.id=? and p.appearance=? GROUP BY p.college_id order by p.college_id 
+2023-03-08 20:00:56.935 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==> Parameters: 26(Integer), positiveM(String)
+2023-03-08 20:00:56.935 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : <==      Total: 1
+2023-03-08 20:00:56.937 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==>  Preparing: select c.id,c.name,p.appearance,COUNT(p.appearance) countapp from (select id,name from t_colleges) c,t_persons p where p.college_id=c.id and c.id=? and p.appearance=? GROUP BY p.college_id order by p.college_id 
+2023-03-08 20:00:56.937 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==> Parameters: 27(Integer), officialM(String)
+2023-03-08 20:00:56.939 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : <==      Total: 1
+2023-03-08 20:00:56.939 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==>  Preparing: select c.id,c.name,p.appearance,COUNT(p.appearance) countapp from (select id,name from t_colleges) c,t_persons p where p.college_id=c.id and c.id=? and p.appearance=? GROUP BY p.college_id order by p.college_id 
+2023-03-08 20:00:56.939 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==> Parameters: 27(Integer), prepareM(String)
+2023-03-08 20:00:56.940 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : <==      Total: 1
+2023-03-08 20:00:56.941 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==>  Preparing: select c.id,c.name,p.appearance,COUNT(p.appearance) countapp from (select id,name from t_colleges) c,t_persons p where p.college_id=c.id and c.id=? and p.appearance=? GROUP BY p.college_id order by p.college_id 
+2023-03-08 20:00:56.941 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==> Parameters: 27(Integer), positiveM(String)
+2023-03-08 20:00:56.942 DEBUG 2352 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : <==      Total: 1
+2023-03-08 20:01:07.245  INFO 2352 --- [SpringContextShutdownHook] o.s.s.concurrent.ThreadPoolTaskExecutor  : Shutting down ExecutorService 'applicationTaskExecutor'
+2023-03-08 20:01:07.248  INFO 2352 --- [SpringContextShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2023-03-08 20:01:07.252  INFO 2352 --- [SpringContextShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2023-03-08 20:01:07.256  INFO 2352 --- [SpringContextShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2023-03-08 21:01:36.028  INFO 15268 --- [restartedMain] com.yzx.party.PartyApplication           : Starting PartyApplication on LAPTOP-5B0BBR9Q with PID 15268 (D:\IDEA\IDEACode\party\target\classes started by 29973 in D:\IDEA\IDEACode\party)
+2023-03-08 21:01:36.030 DEBUG 15268 --- [restartedMain] com.yzx.party.PartyApplication           : Running with Spring Boot v2.3.7.RELEASE, Spring v5.2.12.RELEASE
+2023-03-08 21:01:36.031  INFO 15268 --- [restartedMain] com.yzx.party.PartyApplication           : No active profile set, falling back to default profiles: default
+2023-03-08 21:01:36.066  INFO 15268 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2023-03-08 21:01:36.067  INFO 15268 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2023-03-08 21:01:36.734  INFO 15268 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2023-03-08 21:01:36.826  INFO 15268 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 84ms. Found 14 JPA repository interfaces.
+2023-03-08 21:01:37.454  INFO 15268 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8888 (http)
+2023-03-08 21:01:37.461  INFO 15268 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2023-03-08 21:01:37.461  INFO 15268 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.41]
+2023-03-08 21:01:37.618  INFO 15268 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2023-03-08 21:01:37.618  INFO 15268 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1551 ms
+2023-03-08 21:01:37.749  INFO 15268 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2023-03-08 21:01:37.881  INFO 15268 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2023-03-08 21:01:37.918  INFO 15268 --- [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2023-03-08 21:01:37.965  INFO 15268 --- [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.4.25.Final
+2023-03-08 21:01:38.090  INFO 15268 --- [restartedMain] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2023-03-08 21:01:38.185  INFO 15268 --- [restartedMain] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL57Dialect
+2023-03-08 21:01:38.782  INFO 15268 --- [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2023-03-08 21:01:38.790  INFO 15268 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2023-03-08 21:01:40.254  WARN 15268 --- [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2023-03-08 21:01:40.491  INFO 15268 --- [restartedMain] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2023-03-08 21:01:40.649  INFO 15268 --- [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2023-03-08 21:01:41.330  INFO 15268 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2023-03-08 21:01:41.408  INFO 15268 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8888 (http) with context path ''
+2023-03-08 21:01:41.483  INFO 15268 --- [restartedMain] com.yzx.party.PartyApplication           : Started PartyApplication in 5.807 seconds (JVM running for 7.616)
+2023-03-08 21:01:44.458  INFO 15268 --- [http-nio-8888-exec-3] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2023-03-08 21:01:44.458  INFO 15268 --- [http-nio-8888-exec-3] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2023-03-08 21:01:44.470  INFO 15268 --- [http-nio-8888-exec-3] o.s.web.servlet.DispatcherServlet        : Completed initialization in 12 ms
+2023-03-08 21:08:35.260 DEBUG 15268 --- [http-nio-8888-exec-3] c.y.p.m.NewsChartTwoMapper.radarNews     : ==>  Preparing: select one.id id,one.name,one.nums,one.viewsNum,coalesce(two.numComments,'0') commentsNum from (select c.id id,c.name name,count(n.college_id) nums,sum(views) viewsNum from t_colleges c,t_news n where (c.id=n.college_id) group by c.id limit ?) one left outer join (select colleges.id id,count(comments.id) numComments from t_comments comments,t_colleges colleges where colleges.id=comments.college_id GROUP BY comments.college_id ) two on one.id=two.id 
+2023-03-08 21:08:35.266 DEBUG 15268 --- [http-nio-8888-exec-3] c.y.p.m.NewsChartTwoMapper.radarNews     : ==> Parameters: 7(Integer)
+2023-03-08 21:08:35.291 DEBUG 15268 --- [http-nio-8888-exec-3] c.y.p.m.NewsChartTwoMapper.radarNews     : <==      Total: 5
+2023-03-08 21:09:14.230 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.listCollege_id                 : ==>  Preparing: select p.college_id from t_persons p group by p.college_id 
+2023-03-08 21:09:14.231 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.listCollege_id                 : ==> Parameters: 
+2023-03-08 21:09:14.239 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.listCollege_id                 : <==      Total: 6
+2023-03-08 21:09:14.240 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==>  Preparing: select c.id,c.name,p.appearance,COUNT(p.appearance) countapp from (select id,name from t_colleges) c,t_persons p where p.college_id=c.id and c.id=? and p.appearance=? GROUP BY p.college_id order by p.college_id 
+2023-03-08 21:09:14.241 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==> Parameters: 2(Integer), officialM(String)
+2023-03-08 21:09:14.242 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : <==      Total: 1
+2023-03-08 21:09:14.243 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==>  Preparing: select c.id,c.name,p.appearance,COUNT(p.appearance) countapp from (select id,name from t_colleges) c,t_persons p where p.college_id=c.id and c.id=? and p.appearance=? GROUP BY p.college_id order by p.college_id 
+2023-03-08 21:09:14.243 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==> Parameters: 2(Integer), prepareM(String)
+2023-03-08 21:09:14.244 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : <==      Total: 1
+2023-03-08 21:09:14.245 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==>  Preparing: select c.id,c.name,p.appearance,COUNT(p.appearance) countapp from (select id,name from t_colleges) c,t_persons p where p.college_id=c.id and c.id=? and p.appearance=? GROUP BY p.college_id order by p.college_id 
+2023-03-08 21:09:14.245 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==> Parameters: 2(Integer), positiveM(String)
+2023-03-08 21:09:14.246 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : <==      Total: 1
+2023-03-08 21:09:14.253 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==>  Preparing: select c.id,c.name,p.appearance,COUNT(p.appearance) countapp from (select id,name from t_colleges) c,t_persons p where p.college_id=c.id and c.id=? and p.appearance=? GROUP BY p.college_id order by p.college_id 
+2023-03-08 21:09:14.253 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==> Parameters: 3(Integer), officialM(String)
+2023-03-08 21:09:14.254 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : <==      Total: 1
+2023-03-08 21:09:14.255 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==>  Preparing: select c.id,c.name,p.appearance,COUNT(p.appearance) countapp from (select id,name from t_colleges) c,t_persons p where p.college_id=c.id and c.id=? and p.appearance=? GROUP BY p.college_id order by p.college_id 
+2023-03-08 21:09:14.255 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==> Parameters: 3(Integer), prepareM(String)
+2023-03-08 21:09:14.256 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : <==      Total: 1
+2023-03-08 21:09:14.257 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==>  Preparing: select c.id,c.name,p.appearance,COUNT(p.appearance) countapp from (select id,name from t_colleges) c,t_persons p where p.college_id=c.id and c.id=? and p.appearance=? GROUP BY p.college_id order by p.college_id 
+2023-03-08 21:09:14.257 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==> Parameters: 3(Integer), positiveM(String)
+2023-03-08 21:09:14.258 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : <==      Total: 1
+2023-03-08 21:09:14.260 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==>  Preparing: select c.id,c.name,p.appearance,COUNT(p.appearance) countapp from (select id,name from t_colleges) c,t_persons p where p.college_id=c.id and c.id=? and p.appearance=? GROUP BY p.college_id order by p.college_id 
+2023-03-08 21:09:14.260 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==> Parameters: 5(Integer), officialM(String)
+2023-03-08 21:09:14.261 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : <==      Total: 1
+2023-03-08 21:09:14.261 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==>  Preparing: select c.id,c.name,p.appearance,COUNT(p.appearance) countapp from (select id,name from t_colleges) c,t_persons p where p.college_id=c.id and c.id=? and p.appearance=? GROUP BY p.college_id order by p.college_id 
+2023-03-08 21:09:14.261 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==> Parameters: 5(Integer), prepareM(String)
+2023-03-08 21:09:14.262 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : <==      Total: 1
+2023-03-08 21:09:14.263 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==>  Preparing: select c.id,c.name,p.appearance,COUNT(p.appearance) countapp from (select id,name from t_colleges) c,t_persons p where p.college_id=c.id and c.id=? and p.appearance=? GROUP BY p.college_id order by p.college_id 
+2023-03-08 21:09:14.263 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==> Parameters: 5(Integer), positiveM(String)
+2023-03-08 21:09:14.264 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : <==      Total: 1
+2023-03-08 21:09:14.266 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==>  Preparing: select c.id,c.name,p.appearance,COUNT(p.appearance) countapp from (select id,name from t_colleges) c,t_persons p where p.college_id=c.id and c.id=? and p.appearance=? GROUP BY p.college_id order by p.college_id 
+2023-03-08 21:09:14.266 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==> Parameters: 6(Integer), officialM(String)
+2023-03-08 21:09:14.267 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : <==      Total: 1
+2023-03-08 21:09:14.267 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==>  Preparing: select c.id,c.name,p.appearance,COUNT(p.appearance) countapp from (select id,name from t_colleges) c,t_persons p where p.college_id=c.id and c.id=? and p.appearance=? GROUP BY p.college_id order by p.college_id 
+2023-03-08 21:09:14.267 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==> Parameters: 6(Integer), prepareM(String)
+2023-03-08 21:09:14.268 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : <==      Total: 1
+2023-03-08 21:09:14.268 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==>  Preparing: select c.id,c.name,p.appearance,COUNT(p.appearance) countapp from (select id,name from t_colleges) c,t_persons p where p.college_id=c.id and c.id=? and p.appearance=? GROUP BY p.college_id order by p.college_id 
+2023-03-08 21:09:14.269 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==> Parameters: 6(Integer), positiveM(String)
+2023-03-08 21:09:14.269 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : <==      Total: 1
+2023-03-08 21:09:14.272 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==>  Preparing: select c.id,c.name,p.appearance,COUNT(p.appearance) countapp from (select id,name from t_colleges) c,t_persons p where p.college_id=c.id and c.id=? and p.appearance=? GROUP BY p.college_id order by p.college_id 
+2023-03-08 21:09:14.272 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==> Parameters: 26(Integer), officialM(String)
+2023-03-08 21:09:14.273 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : <==      Total: 1
+2023-03-08 21:09:14.274 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==>  Preparing: select c.id,c.name,p.appearance,COUNT(p.appearance) countapp from (select id,name from t_colleges) c,t_persons p where p.college_id=c.id and c.id=? and p.appearance=? GROUP BY p.college_id order by p.college_id 
+2023-03-08 21:09:14.274 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==> Parameters: 26(Integer), prepareM(String)
+2023-03-08 21:09:14.275 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : <==      Total: 1
+2023-03-08 21:09:14.276 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==>  Preparing: select c.id,c.name,p.appearance,COUNT(p.appearance) countapp from (select id,name from t_colleges) c,t_persons p where p.college_id=c.id and c.id=? and p.appearance=? GROUP BY p.college_id order by p.college_id 
+2023-03-08 21:09:14.277 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==> Parameters: 26(Integer), positiveM(String)
+2023-03-08 21:09:14.277 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : <==      Total: 1
+2023-03-08 21:09:14.279 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==>  Preparing: select c.id,c.name,p.appearance,COUNT(p.appearance) countapp from (select id,name from t_colleges) c,t_persons p where p.college_id=c.id and c.id=? and p.appearance=? GROUP BY p.college_id order by p.college_id 
+2023-03-08 21:09:14.279 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==> Parameters: 27(Integer), officialM(String)
+2023-03-08 21:09:14.280 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : <==      Total: 1
+2023-03-08 21:09:14.281 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==>  Preparing: select c.id,c.name,p.appearance,COUNT(p.appearance) countapp from (select id,name from t_colleges) c,t_persons p where p.college_id=c.id and c.id=? and p.appearance=? GROUP BY p.college_id order by p.college_id 
+2023-03-08 21:09:14.281 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==> Parameters: 27(Integer), prepareM(String)
+2023-03-08 21:09:14.282 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : <==      Total: 1
+2023-03-08 21:09:14.282 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==>  Preparing: select c.id,c.name,p.appearance,COUNT(p.appearance) countapp from (select id,name from t_colleges) c,t_persons p where p.college_id=c.id and c.id=? and p.appearance=? GROUP BY p.college_id order by p.college_id 
+2023-03-08 21:09:14.282 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : ==> Parameters: 27(Integer), positiveM(String)
+2023-03-08 21:09:14.283 DEBUG 15268 --- [http-nio-8888-exec-1] c.y.p.m.P.findPersonsTable               : <==      Total: 1
+2023-03-08 21:10:31.585  INFO 15268 --- [SpringContextShutdownHook] o.s.s.concurrent.ThreadPoolTaskExecutor  : Shutting down ExecutorService 'applicationTaskExecutor'
+2023-03-08 21:10:31.588  INFO 15268 --- [SpringContextShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2023-03-08 21:10:31.592  INFO 15268 --- [SpringContextShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2023-03-08 21:10:31.597  INFO 15268 --- [SpringContextShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

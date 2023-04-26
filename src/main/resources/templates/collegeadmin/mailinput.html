@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="collegeadmin/collegeadmin_fragment :: head(~{::title})">
+    <meta charset="UTF-8" >
+    <!--宽度等于屏幕的宽度 不缩放 便于在pc端和移动端查看  -->
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>专业管理</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <link rel="stylesheet" href="../../static/css/me.css">
+</head>
+<body>
+
+<!--导航 inverted表示黑白与否 attached圆角与否 segment形成一个分段-->
+<nav th:insert="collegeadmin/collegeadmin_fragment :: menu(8)"></nav>
+
+<!--中间内容-->
+<div class="m-padded-tb-big m-container-small">
+    <h3 class="ui dividing header">书信详情</h3>
+    <div class="ui container">
+        <div class="ui segment">
+            <form th:action="@{/admin/collegeAdmin/replayMail/{id}(id=${mailById.getId()})}" method="post" class="ui form">
+                <div class="two fields">
+                    <div class="field">
+                        <label>书信者标题</label>
+                        <input placeholder="title" name="title" type="text" readonly="readonly" th:value="${mailById.getTitle()}">
+                    </div>
+                    <div class="field">
+                        <label>书信者姓名</label>
+                        <input placeholder="personname" name="personname" type="text" readonly="readonly" th:value="${mailById.getPersonname()}">
+                    </div>
+                </div>
+                <div class="two fields">
+                    <div class="field">
+                        <label>类型</label>
+                        <select disabled="disabled" name="qtype" id="qtype" class="ui dropdown search">
+                            <option value="">信件类型</option>
+                            <!--新建重复的时候，或者是修改的时候-->
+                            <option th:selected="${mailById.getQtype()}"
+                                    th:text="${mailById.getQtype()}"
+                                    th:value="${mailById.getQtype()}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>写信时间</label>
+                        <input placeholder="Last Name" name="speaktime" readonly="readonly"  type="date" th:value="${#dates.format(mailById.getSpeaktime(),'yyyy-MM-dd')}">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label>信件内容</label>
+                    <textarea placeholder="请输入信件内容...." name="question" th:text="${mailById.getQuestion()}" readonly="readonly"></textarea>
+                </div>
+
+                <div class="field">
+                    <label>回复</label>
+                    <textarea placeholder="请输入回复内容...." name="answer" th:text="${mailById.getAnswer()}"></textarea>
+                </div>
+
+
+                <!--表单验证的错误信息展示-->
+                <div class="ui error message"></div>
+
+                <!--返回保存和发布按钮-->
+                <div class="ui right aligned container">
+                    <!--onclick事件返回上一个页面-->
+                    <button class="ui button" type="button" onclick="window.history.go(-1)">返回</button>
+                    <button class="ui teal button">提交</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!--底部footer-->
+<footer th:insert="collegeadmin/collegeadmin_fragment :: footer"></footer>
+
+
+<!--脚本-->
+<th:block th:insert="collegeadmin/collegeadmin_fragment :: script"></th:block>
+
+
+<!-- .是通过class获得按钮，当我们触发按钮的时候来取消或者添加相应的样式
+用于移动端展示目录的按钮，但是pc端没有-->
+<script>
+    $('.menu-button').click(function () {
+        $('.menu-control').toggleClass('m-mobile-hide');
+    });
+
+    // #是通过按钮id来弹出赞赏的二维码
+    //先通过按钮获得弹出 然后设置要弹出的内容 设置触发的条件以及弹窗的位置
+    $('#payButton').popup({
+        popup: $('.payCode.popup'),
+        on:'click',
+        position:'bottom center'
+    })
+
+    /*点击头像弹出注销的下拉框*/
+    $('.ui.dropdown')
+        .dropdown();
+
+    /*关闭消息提示框*/
+    $('.message .close')
+        .on('click', function() {
+            $(this)
+                .closest('.message')
+                .transition('fade')
+            ;
+        });
+
+    //移除不可编辑，否则后台无法获取值
+    $("#qtype").removeAttr("disabled");
+
+
+    /*验证内容不能为空*/
+    $('.ui.form').form({
+        fields:{
+            /*这里往上都是固定的内容*/
+            /*title表示你要限定的元素的name属性*/
+            answer:{
+                identifier:'answer',
+                /*指定规则*/
+                rules:[{
+                    type:'empty',
+                    prompt:'书信回复内容不能为空'
+                }]
+            }
+
+        }
+    });
+
+</script>
+</body>
+</html>

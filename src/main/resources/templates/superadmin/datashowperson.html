@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="superadmin/superadmin_fragment :: head(~{::title})">
+    <meta charset="UTF-8">
+    <!--宽度等于屏幕的宽度 不缩放 便于在pc端和移动端查看  -->
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>支部党员数据展示</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <link rel="stylesheet" href="../../static/css/me.css">
+</head>
+<body>
+
+<!--导航 inverted表示黑白与否 attached圆角与否 segment形成一个分段-->
+<nav th:insert="superadmin/superadmin_fragment :: menu(3)"></nav>
+
+
+
+<!--二级导航-->
+<div th:insert="superadmin/superadmin_fragment :: menuOne(2)"></div>
+
+<!--中间内容-->
+<div class="m-padded-tb-big m-container-big">
+    <div class="ui container">
+        <div class="ui segment stackable">
+            <!--筛选列表-->
+            <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+            <div id="mainEChar" style="width: 1100px;height:500px;"></div>
+        </div>
+    </div>
+</div>
+
+
+<!--底部footer-->
+<footer th:insert="superadmin/superadmin_fragment :: footer"></footer>
+
+
+<!--脚本-->
+<th:block th:insert="superadmin/superadmin_fragment :: script"></th:block>
+
+<!--<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>-->
+<!--<script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>-->
+<!--&lt;!&ndash;可视化图表cdn&ndash;&gt;-->
+<!--<script src="https://cdn.bootcss.com/echarts/4.6.0/echarts.min.js"></script>-->
+
+
+
+
+<!-- .是通过class获得按钮，当我们触发按钮的时候来取消或者添加相应的样式
+用于移动端展示目录的按钮，但是pc端没有-->
+<script th:inline="javascript">
+    $('.menu-button').click(function () {
+        $('.menu-control').toggleClass('m-mobile-hide');
+    });
+
+    // #是通过按钮id来弹出赞赏的二维码
+    //先通过按钮获得弹出 然后设置要弹出的内容 设置触发的条件以及弹窗的位置
+    $('#payButton').popup({
+        popup: $('.payCode.popup'),
+        on:'click',
+        position:'bottom center'
+    })
+
+    /*点击头像弹出注销的下拉框*/
+    $('.ui.dropdown')
+        .dropdown();
+
+    /*加载可视化图表*/
+    var dataX = [[${nameJson}]];
+    var dataY1 = [[${offJson}]];
+    var dataY2 = [[${preJson}]];
+    var dataY3 = [[${posJson}]];
+    var dataY4 = [[${sumJson}]];
+    var myChart = echarts.init(document.getElementById('mainEChar'));
+    var option = {
+        title: {
+            text: '学院党员展示'
+        },
+        //工具提示
+        tooltip: {
+            formatter : "{b}<br/>{a} : {c}",
+        },
+        legend: {
+            data: ['党员','预备党员','积极分子','总人数']
+        },
+        grid: {
+            containLabel: false      // false : 刻度标签进行对齐
+        },
+        xAxis: [
+            {
+                type: 'category',
+                data: JSON.parse(dataX),
+                splitLine: {//显示分割线
+                    show: true
+                }
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value',
+                name: '人员分布',
+                // splitLine: {//不显示分割线
+                //     show: false
+                // },
+                axisLabel: {
+                    formatter: '{value} 人'
+                }
+            },
+            {
+                type: 'value',
+                name: '总人数',
+                axisLine: {
+                    formatter: '{value} 人'
+                },
+                splitLine: {
+                    show: false
+                }
+            }
+        ],
+        series: [
+            {
+                name: '党员',
+                type: 'bar',
+                emphasis: {
+                    focus: 'series'
+                },
+                itemStyle:{
+                  color:'#c23531'
+                },
+                data:  JSON.parse(dataY1)
+            },
+            {
+                name: '预备党员',
+                type: 'bar',
+                emphasis: {
+                    focus: 'series'
+                },
+                itemStyle:{
+                    color:'#fac858'
+                },
+                data:  JSON.parse(dataY2)
+            },
+            {
+                name: '积极分子',
+                type: 'bar',
+                emphasis: {
+                    focus: 'series'
+                },
+                itemStyle:{
+                    color:'#3ba272'
+                },
+                data:  JSON.parse(dataY3)
+            },
+            {
+                name: '总人数',
+                type: 'line',
+                yAxisIndex: 1,//索引从0开始
+                data:  JSON.parse(dataY4)
+            }
+        ]
+    };
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+
+</script>
+</body>
+</html>

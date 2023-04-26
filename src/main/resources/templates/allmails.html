@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="c_fragment :: head(~{::title})">
+    <meta charset="UTF-8">
+    <!--宽度等于屏幕的宽度 不缩放 便于在pc端和移动端查看  -->
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>书记信箱</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <link rel="stylesheet" href="../static/css/me.css">
+</head>
+<body>
+
+<!--导航 inverted表示黑白与否 attached圆角与否 segment形成一个分段-->
+<nav th:insert="c_fragment :: menu(5)"></nav>
+
+
+
+<!--中间内容-->
+<div class="m-padded-tb-big m-container-small">
+    <div class="ui container">
+
+        <!--展示分类头部-->
+        <div class="ui segment top attached">
+            <div class="ui middle  aligned two column grid">
+                <div class="ui column">
+                    <h3 class="ui red header">我的信箱<block style="color: #0a001f">/<h2 class="ui header orange m-inline-block" th:text="${page.getTotalElements()}">14</h2>条</block> </h3>
+                </div>
+                <div class="ui column right aligned">
+                    <!--如果是已回复，就是展示一颗星-->
+                    <th:block th:if="${activeState}==1">
+                        <!--点击可以切换到未回复-->
+                    <a th:href="@{/personShow/allMails/2}" class="ui label"><div class="ui star rating ok" onclick="starJs()" data-rating="1"></div>已回复</a>
+                    </th:block>
+                    <!--如果是未回复，就是展示零颗星-->
+                    <th:block th:if="${activeState}==2">
+                        <!--点击可以切换到已回复-->
+                        <a th:href="@{/personShow/allMails/1}" class="ui label"><div class="ui star rating ok" onclick="starJs()" data-rating="0"></div>未回复</a>
+                    </th:block>
+
+                    <a th:href="@{/personShow/writeMail}" class="ui teal  button">写信</a>
+                    <a onclick="deleteSome()" class="ui red  button">批量删除</a>
+                    <input type="checkbox" class="m-padded-lr-responsiveSmall" onclick="cheAll()">
+                </div>
+            </div>
+        </div>
+
+        <!--操作提示信息-->
+        <div class="ui success message" th:unless="${#strings.isEmpty(message)}">
+            <i class="icon close"></i>
+            <div class="header">提示:</div>
+            <p th:text="${message}"></p>
+        </div>
+
+        <!--列表 添加了top则只会和下面的div连接起来-->
+        <div class="ui segment top attached red">
+
+            <th:block th:if="${1==activeState}">
+                <div class="ui positive message">
+                    <i class="star icon"></i>
+                    已回复信息
+                </div>
+            </th:block>
+
+            <th:block th:if="${2==activeState}">
+                <div class="ui blue message">
+                    <i class="ban icon"></i>
+                    未回复信息
+                </div>
+            </th:block>
+
+            <div class="ui divided items">
+                <!--不存在数据就提示-->
+                <th:block th:if="${page.getTotalElements()}<=0">
+                    <h4 class=" m-opacity-small" >暂无信件</h4>
+                </th:block>
+                <!--如果存在数据就展示-->
+                <th:block th:if="${page.getTotalElements()}>0">
+                    <div class="item" th:each="mailOne:${page.content}">
+                        <div class="content">
+                            <a class="header" target="_blank" th:href="@{/personShow/mail/{id}(id=${mailOne.getId()})}" >[[${mailOne.getTitle()}]]</a>【<i class="calendar alternate outline icon"></i>提交时间:[[${#dates.format(mailOne.getSpeaktime(),'yyyy-MM-dd')}]]】
+                            <!--用于批量删除-->
+                            <input class="ui right floated" type="checkbox" style="zoom: 150%" name="ids" id="ids" th:value="${mailOne.getId()}">
+                            <!--只有回复了才展示-->
+                            <div class="meta" th:if="${mailOne.getAdminname()}!=null">
+                                <span class="ui mini cinema " style="font-size: 12px"><i class="user circle icon"></i>回复人:[[${mailOne.getAdminname()}]]</span>
+                                <span class="ui mini cinema " style="font-size: 12px" ><i class="calendar alternate outline icon"></i>回复时间:[[${#dates.format(mailOne.getReplaytime(),'yyyy-MM-dd')}]]</span>
+                            </div>
+                            <div class="description">
+                                <p class="m-text m-margin-font" >提问：[[|${mailOne.getQuestionintro()}....|]]</p>
+                            </div>
+                            <div class="description" th:if="${mailOne.getAnswerintro()}!=null">
+                                <p class="m-text" >回复：[[|${mailOne.getAnswerintro()}....|]]</p>
+                            </div>
+                            <div class="extra">
+                                <div class="ui label"><i class="tags icon"></i>[[${mailOne.getQtype()}]]</div>
+                                <th:block th:each="collegeOne:${collegeList}">
+                                    <th:block th:if="${mailOne.getCollege_id()==collegeOne.getId()}">
+                                        <div class="ui label"><i class="chess queen icon"></i>[[${collegeOne.getName()}]]</div>
+                                    </th:block>
+                                </th:block>
+
+                                <a class="ui right floated primary button" target="_blank" th:href="@{/personShow/mail/{id}(id=${mailOne.getId()})}">
+                                    查看详情
+                                    <i class="right chevron icon"></i>
+                                </a>
+                                <!--只有未读信件可以编辑mailOne.getStatetwo()-->
+                                <th:block th:if="${mailOne.getStatetwo()=='未回复'}">
+                                    <a class="ui right floated teal button"  th:href="@{/personShow/updateMail/{id}(id=${mailOne.getId()})}">
+                                        <i class="pen square icon"></i>修改
+                                    </a>
+                                </th:block>
+                                <!--删除-->
+                                <a th:data-id="${mailOne.getId()}" class="ui right floated red button" onclick="deleteOne(this.getAttribute('data-id'))"><i class="trash alternate outline icon" ></i>删除</a>
+<!--                                <a class="ui right floated red button" th:href="@{/personShow/deleteMail/{id}(id=${mailOne.getId()})}">-->
+                                </a>
+
+                            </div>
+                        </div>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+
+
+        <!--尾部的模块-->
+        <div class="ui segment attached bottom" th:if="${page.getTotalPages()}>1">
+            <div class="ui grid" >
+                <div class="ui three wide column" >
+                    <a th:href="@{/personShow/allMails/{state}(state=${activeState})} + '/?page=0' " class="ui teal basic button" >首页</a>
+                </div>
+
+                <!--如果有上一页，存在链接-->
+                <div class="ui three wide column" th:if="${page.hasPrevious()}">
+                    <!--teal选定颜色 basic不要填充颜色-->
+                    <a th:href="@{/personShow/allMails/{state}(state=${activeState})} + '/?page='+(${page.number}-1)" class="ui teal basic button">上一页</a>
+                </div>
+
+                <!--如果没有上一页，不存在链接-->
+                <div class="ui three wide column" th:if="!${page.hasPrevious()}">
+                    <!--teal选定颜色 basic不要填充颜色-->
+                    <a  class="ui teal basic button">上一页</a>
+                </div>
+
+                <div class="ui four wide column middle aligned">
+                    当前第 [[${page.number}+1]]页/共 [[${page.getTotalPages()}]] 页
+                </div>
+
+                <div class="ui three wide column" th:if="${page.hasNext()}">
+                    <a th:href="@{/personShow/allMails/{state}(state=${activeState})} + '/?page='+(${page.number}+1)" class="ui teal basic button">下一页</a>
+                </div>
+
+                <div class="ui three wide column" th:if="!${page.hasNext()}">
+                    <a  class="ui teal basic button">下一页</a>
+                </div>
+
+                <div class="ui three wide column right aligned" >
+                    <a th:href="@{/personShow/allMails/{state}(state=${activeState})} + '/?page='+(${page.getTotalPages()}-1)" class="ui teal basic button" >尾页</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <br>
+
+
+
+
+</div>
+
+
+<!--底部footer-->
+<footer th:insert="c_fragment :: footer"></footer>
+
+
+<th:block th:insert="c_fragment::script"></th:block>
+
+
+<!--通过class获得按钮，当我们触发按钮的时候来取消或者添加相应的样式
+用于移动端展示目录的按钮，但是pc端没有-->
+<script>
+    $('.menu-button').click(function () {
+        $('.menu-control').toggleClass('m-mobile-hide');
+    });
+
+    /*点击头像弹出注销的下拉框*/
+    $('.ui.dropdown')
+        .dropdown();
+
+
+    /*关闭消息提示框*/
+    $('.message .close')
+        .on('click', function() {
+            $(this)
+                .closest('.message')
+                .transition('fade')
+            ;
+        });
+
+
+    /*单个删除*/
+    function deleteOne(id) {
+        var mailId =id;
+        var t = confirm("您确认要删除选中的内容吗？");
+        if (t==false){
+            return false;
+        }else {
+            window.location.replace("/personShow/deleteMail/"+mailId);
+        }
+    }
+
+    /*全选或者取消全选*/
+    var isCheckAll = false;
+    function cheAll(){
+        $("input[type='checkbox']").each(function() {
+            this.checked = !isCheckAll;
+        });
+        isCheckAll = !isCheckAll;
+    }
+
+    /*批量删除传递id*/
+    function deleteSome(){
+        var Checkbox = false;
+        $("input[name='ids']").each(function() {
+            if (this.checked == true) {
+                Checkbox = true;
+            }
+        });
+        if (Checkbox) {
+            var t = confirm("您确认要删除选中的内容吗？");
+            if (t == false) {
+                return false;
+            } else {
+                var checkedID="";
+                $("input[name='ids']").each(function() {
+                    if (this.checked == true) {
+                        checkedID += this.value + ",";
+                    }
+                });
+                window.location.replace("/personShow/deleteSomeMail/"+checkedID);
+            }
+        } else {
+            alert("请选择您要删除的内容!");
+            return false;
+        }
+    }
+
+
+    /*星星切换已回复和未回复*/
+    $('.rating.ok').rating({
+            /*可设置起始数量*/
+            // initialRating: 2,
+            /*最大数量一颗星*/
+            maxRating: 1
+        })
+    ;
+
+    /*星星数量切换已回复和未回复*/
+    function starJs(){
+        //获得星星的点击数量
+        var starNum = $('.rating.ok').rating("get rating");
+        //因为是点击之后才能获得
+        if(0==starNum){
+            // 1、如果获得是0颗星，那么就是前往已回复；
+            window.location.replace("/personShow/allMails/1");
+        }else if (1==starNum){
+            // 2、如果获得是1颗星，那么就是前往未回复
+            window.location.replace("/personShow/allMails/2");
+        }
+        console.log(starNum);
+    }
+
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="collegeadmin/collegeadmin_fragment :: head(~{::title})">
+    <meta charset="UTF-8" >
+    <!--宽度等于屏幕的宽度 不缩放 便于在pc端和移动端查看  -->
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>三会一课发布</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <!--导入markdown的依赖css-->
+    <link rel="stylesheet" href="../../static/lib/editormd/css/editormd.min.css">
+    <link rel="stylesheet" href="../../static/css/me.css">
+</head>
+<body>
+
+<!--导航 inverted表示黑白与否 attached圆角与否 segment形成一个分段-->
+<nav th:insert="collegeadmin/collegeadmin_fragment :: menu(7)"></nav>
+
+
+<!--二级导航-->
+<div th:insert="collegeadmin/collegeadmin_fragment :: menuThree(1)"></div>
+
+
+<!--中间内容-->
+<div class="m-padded-tb-big m-container-small">
+    <div class="ui container">
+        <form id="new-form"  method="post" class="ui form" th:action="${getMeetingById.getId()}==null ? @{/admin/collegeAdmin/meetingShow} :  @{/admin/collegeAdmin/meetingUpdate/{id}(id=${getMeetingById.getId()})}">
+            <!--构建会议-->
+            <div class="two fields">
+                <!--构建文章的类型以及文章的标题-->
+                <div class="field ">
+                    <!--选择文章类型-->
+                    <div class="ui labeled left input"><!--这个div只是定义一个label-->
+                        <!--标题-->
+                        <label class="ui teal basic label">会议标题</label>
+                        <input type="text" name="title" th:value="${getMeetingById.getTitle()}" placeholder="请输入会议标题">
+                    </div>
+                </div>
+                <!--类型-->
+                <div class=" field">
+                    <div class="ui left labeled input">
+                        <label  class="ui compact teal basic label">会议类型</label>
+                        <!--fluid撑满宽度 multiple可以多选标签 search可以搜索-->
+                        <div class="ui fluid  search selection action dropdown">
+                            <input type="hidden" name="mtype" th:value="${getMeetingById.getMtype()}">
+                            <i class="icon dropdown"></i>
+                            <div class="default text">会议类型</div>
+                            <div class="menu">
+                                <div class="item" data-value="支部党员大会">支部党员大会</div>
+                                <div class="item" data-value="支委会">支委会</div>
+                                <div class="item" data-value="党小组会">党小组会</div>
+                                <div class="item" data-value="党课">党课</div>
+                                <div class="item" data-value="其他会议">其他会议</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--会议的起止时间-->
+            <div class="two fields">
+                <!--时间-->
+                <div class=" field">
+                    <div class="ui left labeled input">
+                        <label class="ui teal basic label">起始时间</label>
+                        <input type="datetime-local" th:value="${startTtime}" name="startTtime"  id="startTtime" placeholder="请输入会议起始时间">
+                    </div>
+                </div>
+                <!--时间-->
+                <div class=" field">
+                    <div class="ui left labeled input">
+                        <label class="ui teal basic label">结束时间</label>
+                        <input type="datetime-local" th:value="${endTtime}" name="endTtime" placeholder="请输入会议结束时间">
+                    </div>
+                </div>
+            </div>
+
+            <!--分类和标签-->
+            <div class="two fields">
+                <div class=" field">
+                    <div class="ui left labeled input">
+                        <label class="ui teal basic label">会议地址</label>
+                        <input type="text" name="address" th:value="${getMeetingById.getAddress()}" placeholder="请输入会议地址">
+                    </div>
+                </div>
+                <div class=" field">
+                    <div class="ui left labeled input">
+                        <label class="ui teal basic label">参会人数</label>
+                        <input type="text" name="nums" th:value="${getMeetingById.getNums()}" placeholder="参会人数">
+                    </div>
+                </div>
+            </div>
+
+            <!--文章主体-->
+            <div class="field">
+                <!--对应的外层容器的名字 用于markdown初始化-->
+                <!--style="z-index: 1 !important;"表示覆盖到最上面-->
+                <div id="md-content" style="z-index: 1 !important;">
+                    <textarea placeholder="新闻公告内容" th:text="${getMeetingById.getContent()}" name="content" style="display: none"></textarea>
+                </div>
+            </div>
+
+            <!--表单验证的错误信息展示-->
+            <div class="ui error message"></div>
+
+            <!--返回保存和发布按钮-->
+            <div class="ui right aligned container">
+                <!--onclick事件返回上一个页面-->
+                <button class="ui button" type="button" onclick="window.history.go(-1)">返回</button>
+<!--                <button type="button"  id="save-btn" class="ui secondary button">保存</button>-->
+                <button type="button" id="public-btn" class="ui teal button">发布</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+
+<!--底部footer-->
+<footer th:insert="collegeadmin/collegeadmin_fragment :: footer"></footer>
+
+
+<!--脚本-->
+<th:block th:insert="collegeadmin/collegeadmin_fragment :: script"></th:block>
+
+
+
+<script>
+
+    /*初始化markdown编辑器*/
+/*contentEditor是我们自定义的名字 无意义*/
+    var contentEditor;
+    $(function() {
+        /*md-content是我们编辑器外层的div名字*/
+        contentEditor = editormd("md-content", {
+            width   : "100%",
+            height  : 640,
+            syncScrolling : "single",
+            /*这里的路径是markdown内置的lib路径*/
+            path    : "/lib/editormd/lib/"
+        });
+    });
+
+
+    /*.是通过class获得按钮，当我们触发按钮的时候来取消或者添加相应的样式
+用于移动端展示目录的按钮，但是pc端没有*/
+    $('.menu-button').click(function () {
+        $('.menu-control').toggleClass('m-mobile-hide');
+    });
+
+    /*弹出下拉框*/
+    $('.ui.dropdown')
+        .dropdown();
+
+    /*保存或者发布*/
+    /*如果是保存 那么published赋值为false*/
+    // $('#save-btn').click(function () {
+    //     $('[name="published"]').val("草稿");
+    //     $('#new-form').submit();
+    // });
+
+    /*如果是发布 那么published赋值为true*/
+    $('#public-btn').click(function () {
+        // $('[name="published"]').val("发布");
+        $('#new-form').submit();
+    });
+
+
+
+    /*验证内容不能为空*/
+    $('.ui.form').form({
+        fields:{
+            /*这里往上都是固定的内容*/
+            /*title表示你要限定的元素的name属性*/
+            title:{
+                identifier:'title',
+                /*指定规则*/
+                rules:[{
+                    type:'empty',
+                    prompt:'会议标题不能为空'
+                }]
+            },
+            mtype:{
+                identifier:'mtype',
+                /*指定规则*/
+                rules:[{
+                    type:'empty',
+                    prompt:'会议类型不能为空'
+                }]
+            },
+            startTtime:{
+                identifier:'startTtime',
+                /*指定规则*/
+                rules:[{
+                    type:'empty',
+                    prompt:'起始时间不能为空'
+                }]
+            },
+            endTtime:{
+                identifier:'endTtime',
+                /*指定规则*/
+                rules:[{
+                    type:'empty',
+                    prompt:'结束时间不能为空'
+                }]
+            },
+            address:{
+                identifier:'address',
+                /*指定规则*/
+                rules:[{
+                    type:'empty',
+                    prompt:'会议地址不能为空'
+                }]
+            },
+            nums:{
+                identifier:'nums',
+                /*指定规则*/
+                rules:[{
+                    type:'integer',
+                    prompt:'参会人数不能为空且必须为整数'
+                }]
+            },
+            content:{
+                identifier:'content',
+                /*指定规则*/
+                rules:[{
+                    type:'empty',
+                    prompt:'会议内容不能为空'
+                }]
+            }
+
+
+        }
+    });
+
+</script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yzx.party.mapper.NewsChartMapper">
+    <select id="findAllTop" parameterType="Integer" resultType="NewsChart">
+        select  c.id id,c.name name,count(n.college_id) nums from t_colleges c,t_news n
+        where c.id=n.college_id group by c.id limit #{size}
+    </select>
+
+    <select id="foreachCollegeNews" parameterType="Integer" resultType="NewsChart">
+        select  m.id id,m.name name,count(n.major_id) nums from t_majors m,t_news n
+        where m.id=n.major_id and n.college_id=#{arg0} group by m.id limit #{arg1}
+    </select>
+
+</mapper>

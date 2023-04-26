@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="superadmin/superadmin_fragment :: head(~{::title})">
+    <meta charset="UTF-8" >
+    <!--宽度等于屏幕的宽度 不缩放 便于在pc端和移动端查看  -->
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>学院管理员</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <link rel="stylesheet" href="../../static/css/me.css">
+</head>
+<body>
+
+<!--导航 inverted表示黑白与否 attached圆角与否 segment形成一个分段-->
+<nav th:insert="superadmin/superadmin_fragment :: menu(5)"></nav>
+
+
+<!--中间内容-->
+<div class="m-padded-tb-big m-container-middle">
+    <div class="ui container">
+
+        <!--筛选数据-->
+        <div class="ui segment form" >
+            <!--后台传递的page-->
+            <input type="hidden" name="page">
+            <div class="inline fields">
+                <div class="ui field ">
+                    <input type="text" name="name" placeholder="管理员姓名">
+                </div>
+                <!--分类-->
+                <div class="field">
+                    <div class="ui labeled action input">
+                        <div class="ui college_id_select search selection dropdown">
+                            <input type="hidden" name="college_id">
+                            <i class="dropdown icon"></i>
+                            <div class="default text">学院党支部</div>
+                            <div class="menu">
+                                <div th:each="collegeOne:${listColleges}"  class="item" th:data-value="${collegeOne.getId()}" th:text="${collegeOne.getName()}">软件学院</div>
+                            </div>
+                        </div>
+                        <button id="clear-btn" class="ui clear button">清除</button>
+                    </div>
+                </div>
+                <!--按钮-->
+                <div class="field">
+                    <button type="button" id="search-btn" class="ui mini teal basic button">
+                        <i class="icon search"></i>搜索
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!--操作提示信息-->
+        <div class="ui success message" th:unless="${#strings.isEmpty(message)}">
+            <i class="icon close"></i>
+            <div class="header">提示:</div>
+            <p th:text="${message}"></p>
+        </div>
+
+        <!--列表-->
+        <div id="table-containerTwo">
+            <table th:fragment="adminsList" class="ui celled table">
+            <thead>
+            <tr>
+                <th></th>
+                <th>学院党支部</th>
+                <th>学院书记名字</th>
+                <th>入党时间</th>
+                <th>联系电话</th>
+                <th>邮箱</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="admins,iterStar:${page.content}">
+                <td th:text="${iterStar.count}">1</td>
+                <th:block th:each="collegeTwo:${listColleges}">
+                    <th:block th:if="${admins.getCollege_id()==collegeTwo.getId()}">
+                        <td th:text="${collegeTwo.getName()}">软件学院</td>
+                    </th:block>
+                </th:block>
+                <td th:text="${admins.getName()}">张三</td>
+                <td th:text="${#dates.format(admins.getJoinpartytime(),'yyyy-MM-dd')}">1997/12/13</td>
+                <td th:text="${admins.getPhone()}">123456789</td>
+                <td th:text="${admins.getEmail()}">123456789@163.com</td>
+                <td>
+                    <a th:href="@{/admin/superAdmin/administratorsUpdate/{id}(id=${admins.getId()})}" class="ui mini teal  button">编辑</a>
+                    <!--保证自己不能删除自己-->
+                    <th:block th:if="${adminLog.getId()!=admins.getId()}">
+                        <!--获取单个id，用于删除-->
+                        <a th:data-id="${admins.getId()}" class="ui mini red  button" onclick="deleteOne(this.getAttribute('data-id'))">删除</a>
+<!--                        <a  th:href="@{/admin/superAdmin/administratorsDelete/{id}(id=${admins.getId()})}" class="ui mini red  button">删除</a>-->
+                    </th:block>
+
+                </td>
+            </tr>
+
+            </tbody>
+            <tfoot>
+            <tr>
+                <!--colspan合并6列的单元格 -->
+                <th colspan="7">
+                    <!--上一页和下一页-->
+                    <div class="ui  pagination mini menu" th:if="${page.totalPages}>1">
+                        <a onclick="pageJs(this)" th:attr="data-page=0" class="item" >首页</a>
+
+                        <!--data-page是自定义的数据 当我们点击的时候去处理上述input传递的page-->
+                        <a onclick="pageJs(this)" th:attr="data-page=${page.number}-1" class="item" th:if="${page.hasPrevious()}" ><i class="icon left chevron"></i>上一页</a>
+
+                        <div class="item">
+                            当前第 [[${page.number}+1]]页/共 [[${page.getTotalPages()}]] 页
+                        </div>
+
+                        <a onclick="pageJs(this)" th:attr="data-page=${page.number}+1" class="item" th:if="${page.hasNext()}" >下一页<i class="icon right chevron"></i></a>
+
+
+                        <a onclick="pageJs(this)" th:attr="data-page=${page.getTotalPages()}-1" class="item"  >尾页</a>
+
+                        <div class="item">
+                            共<p class=" ui header orange m-inline-block " th:text="${page.getTotalElements()}"></p>个
+                        </div>
+                    </div>
+                    <a th:href="@{/admin/superAdmin/administratorsInput}" class="ui mini teal basic button right floated">新增学院党建管理员</a>
+                </th>
+            </tr>
+            </tfoot>
+        </table>
+        </div>
+    </div>
+</div>
+
+
+<!--底部footer-->
+<footer th:insert="superadmin/superadmin_fragment :: footer"></footer>
+
+
+<!--脚本-->
+<th:block th:insert="superadmin/superadmin_fragment :: script"></th:block>
+
+
+
+<!-- .是通过class获得按钮，当我们触发按钮的时候来取消或者添加相应的样式
+用于移动端展示目录的按钮，但是pc端没有-->
+<script>
+    $('.menu-button').click(function () {
+        $('.menu-control').toggleClass('m-mobile-hide');
+    });
+
+    // #是通过按钮id来弹出赞赏的二维码
+    //先通过按钮获得弹出 然后设置要弹出的内容 设置触发的条件以及弹窗的位置
+    $('#payButton').popup({
+        popup: $('.payCode.popup'),
+        on:'click',
+        position:'bottom center'
+    })
+
+    /*点击头像弹出注销的下拉框*/
+    $('.ui.dropdown')
+        .dropdown();
+
+    /*点击清除分类选择*/
+    $('#clear-btn')
+        .on('click', function() {
+            $('.ui.college_id_select.dropdown')
+                .dropdown('clear')
+            ;
+        });
+
+
+    /*关闭消息提示框*/
+    $('.message .close')
+        .on('click', function() {
+            $(this)
+                .closest('.message')
+                .transition('fade')
+            ;
+        });
+
+
+    /*单个删除*/
+    function deleteOne(id) {
+        var adminId =id;
+        var t = confirm("您确认要删除选中的内容吗？");
+        if (t==false){
+            return false;
+        }else {
+            window.location.replace("/admin/superAdmin/administratorsDelete/"+adminId);
+        }
+    }
+
+    /*翻页的时候修改page数值*/
+    /*这里的page对应的是js方法*/
+    function pageJs(obj) {
+        /*这里的name=page是我们自定义的input中的隐含阈
+        * date('page')是获取了翻页中我们自定义的data-page的值
+        * 说白了就是点击按钮的时候给我们的隐含阈赋值为data-page*/
+        $("[name='page']").val($(obj).data("page"));
+        loaddata();
+    }
+
+    /*按钮点击提交调用方法*/
+    $('#search-btn').click(function () {
+        /*点击搜索的时候把page清0，保证从第一页开始*/
+        $("[name='page']").val(0);
+        loaddata();
+    });
+
+    /*Ajax请求来提交搜索信息*/
+    function loaddata() {
+        $("#table-containerTwo").load(/*[[@{/admin/superAdmin/administrators/search}]]*/"/admin/superAdmin/administrators/search",{
+            name :$("[name='name']").val(),
+            college_id :$("[name='college_id']").val(),
+            page:$("[name='page']").val()
+        });
+    }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="c_fragment :: head(~{::title})">
+    <meta charset="UTF-8">
+    <!--宽度等于屏幕的宽度 不缩放 便于在pc端和移动端查看  -->
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>新闻详情</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <!--导入排版的typo插件依赖-->
+    <link rel="stylesheet" href="../static/css/typo.css">
+    <!--这是代码高亮的prism的插件依赖-->
+    <link rel="stylesheet" href="../static/lib/prism/prism.css">
+    <!--这是自定义的css-->
+    <link rel="stylesheet" href="../static/css/me.css">
+</head>
+<body>
+
+<th:block th:if="${formatNew.getCollege_id()}==1">
+    <!--导航 inverted表示黑白与否 attached圆角与否 segment形成一个分段-->
+    <nav th:insert="c_fragment :: menu(1)"></nav>
+</th:block>
+
+<th:block th:if="${formatNew.getCollege_id()}!=1">
+    <!--导航 inverted表示黑白与否 attached圆角与否 segment形成一个分段-->
+    <nav th:insert="c_fragment :: menu(2)"></nav>
+</th:block>
+
+
+<!--中间内容-->
+<div class="m-padded-tb-big m-container-small">
+
+    <div class="ui container" >
+
+        <!--头部模块 展示时间和头像还有阅读量-->
+        <div class="ui segment top attached">
+                <!-- item用于一个模块 avatar表示圆角图像 常用于头像-->
+            <div class="ui grid">
+                    <div class="five wide column">
+                        <div class="ui link list horizontal">
+                            <th:block th:each="adminOne:${adminList}" >
+                                <th:block th:if="${formatNew.getAdmin_id()==adminOne.getId()}" >
+                                    <div class="item">
+                                        <img src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fc-ssl.duitang.com%2Fuploads%2Fitem%2F202004%2F22%2F20200422115716_mvgco.jpg&refer=http%3A%2F%2Fc-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1641542691&t=bf60fc89ecc8c8026c4f7478859cdad6"
+                                             alt="" class="ui avatar image" >
+                                        <div class="content">
+                                            <!--header 用于文字加粗-->
+                                            <div class="header m-text-thin" th:text="${adminOne.getName()}">
+                                                yzx
+                                            </div>
+                                        </div>
+                                    </div>
+                                </th:block>
+                            </th:block>
+                        </div>
+                    </div>
+                    <div class="eleven wide column right aligned m-padded-tb-miniMore">
+                        <div class="ui link list horizontal ">
+                            <!--阅读数量-->
+                            <div class="item right aligned">
+                                <i class="icon eye" ></i>[[${formatNew.getViews()}]]
+                            </div>
+                            <!--发布日期-->
+                            <div class="item right aligned">
+                                <i class="icon calendar alternate outline"  ></i>[[${#dates.format(formatNew.getUpdatetime(),'yyyy-MM-dd')}]]
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+
+
+        <!--图像区域,如果不为空则展示-->
+        <th:block th:if="${formatNew.getIndexpicture()}!=''">
+            <div class="ui segment attached">
+                <!--fluid图片撑满容器-->
+                <img src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2F1f1573532207d62d8df771aef2ad1d5920dc2c803e804-I6Sh4L_fw658&refer=http%3A%2F%2Fhbimg.b0.upaiyun.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1641694443&t=5e09b4611f26115c06b123abb6aa982b"
+                     alt="" class="ui fluid image rounded" th:src="@{${formatNew.getIndexpicture()}}">
+            </div>
+        </th:block>
+
+
+        <!--文章内容区域-->
+        <div class="ui segment attached padded">
+            <!--basic也可以用作没有框线-->
+            <div class="ui segment right aligned basic">
+                <div class="ui label basic orange" th:text="${formatNew.getNtype()}">原创</div>
+            </div>
+            <h2 class="ui header center aligned" th:text="${formatNew.getTitle()}">推免研究生</h2>
+
+            <!--中间的主要内容-->
+            <div id="content" th:utext="${formatNew.getContent()}" class="typo typo-selection m-padded-lr-responsive m-padded-tb-big">
+
+            </div>
+        </div>
+
+
+        <!--博客信息-->
+        <!--positive背景绿色-->
+        <div class="ui attached positive message">
+            <div class="ui middle aligned grid">
+                <div class="eleven wide column">
+                    <ui class="list">
+                        <th:block th:each="adminTwo:${adminList}">
+                            <th:block th:if="${adminTwo.getId()==formatNew.getAdmin_id()}">
+                                <li>作者：[[${adminTwo.getName()}]]</li>
+                                <li>时间：[[${#dates.format(formatNew.getUpdatetime(),'yyyy-MM-dd')}]]</li>
+                                <li>联系地址：江西省南昌市青山湖区白水湖管理处华东交通大学</li>
+                            </th:block>
+                        </th:block>
+                    </ui>
+                </div>
+                <div class="five wide column">
+                    <img src="../static/images/QQCode.png" th:src="@{/images/QQCode.png}" alt="" class="ui right floated bordered rounded image" width="60%">
+                </div>
+            </div>
+        </div>
+
+        <!--留言区域-->
+        <div  class="ui bottom attached segment">
+            <!--利用请求只会刷新评论的展示区域-->
+            <div id="comment-container" class="ui teal segment">
+                <!--用于后端的刷新回到列表这个位置-->
+                <div th:fragment="commentListShow">
+                    <div class="ui small comments" style="max-width: 100%">
+                        <h3 class="ui dividing header" >评论</h3>
+                        <div class="comment" th:each="commentOne:${listCommentsParent}">
+                            <a class="avatar">
+                                <img src="data:image/jpeg;base64,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"
+                                     alt="" class="ui avatar image" >
+                            </a>
+                            <div class="content">
+                                <a class="author">
+                                    <span th:text="${commentOne.getNickname()}" >Matt</span>
+<!--                                    <div class="ui mini basic teal left pointing label m-padded-mini" >博主</div>-->
+                                </a>
+                                <div class="metadata">
+                                    <span class="date" th:text="${#dates.format(commentOne.getCreattime(),'yyyy-MM-dd HH:mm:ss')}">今天下午 5:42</span>
+                                </div>
+                                <!--只能删除自己的评论-->
+                                <th:block th:if="${commentOne.getPerson_id()==person_id}">
+                                    <div class="metadata" style="color: #8F938F">
+                                        <input type="hidden" id="hiddenId" th:value="${commentOne.getId()}">
+                                        <a th:data-id="${commentOne.getId()}" onclick="deleteOne(this.getAttribute('data-id'))">删除</a>
+                                    </div>
+                                </th:block>
+
+                                <div class="text" th:text="${commentOne.getContent()}">太赞了！ </div>
+                                <div class="actions">
+                                    <!--注意这个地方，attr用于标注我们自己定义的属性-->
+                                    <!--这里给两个属性赋值，就是为了在js中可以再次获得属性对应的值，获得回复所对应的评论的id-->
+                                    <a class="reply"
+                                       data-commentid="1" data-commentnickname="Matt"
+                                       onclick="reply(this)"
+                                       th:attr="data-commentid=${commentOne.getId()},data-commentnickname=${commentOne.getNickname()}">回复
+                                    </a>
+                                </div>
+                            </div>
+                            <!--能力有限，只能展示一个回复的评论-->
+                            <th:block th:each="commentTwo:${listCommentsSon}">
+                                <th:block th:if="${commentTwo.getParent_id()==commentOne.getId()}">
+                                    <div class="comments" >
+                                    <div class="comment">
+                                        <a class="avatar">
+                                            <img src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic.51yuansu.com%2Fpic2%2Fcover%2F00%2F35%2F43%2F58119f542530c_610.jpg&refer=http%3A%2F%2Fpic.51yuansu.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1648111006&t=73f43b9835833f591fa4acf1ed192589"
+                                                 alt="" class="ui avatar image">
+                                        </a>
+                                        <div class="content">
+                                            <a class="author" >
+                                                <span th:text="${commentTwo.getNickname()}"></span>
+<!--                                                <div class="ui mini basic teal left pointing label m-padded-mini" >博主</div>-->
+                                                &nbsp; @<span th:text="${commentOne.getNickname()}" style="color: #2aa198"></span>
+                                            </a>
+                                            <div class="metadata">
+                                                <span class="date" th:text="${#dates.format(commentTwo.getCreattime(),'yyyy-MM-dd HH:mm:ss')}">今天下午 5:42</span>
+                                            </div>
+                                            <!--只能删除自己的评论-->
+                                            <th:block th:if="${commentTwo.getPerson_id()==person_id}">
+                                                <div class="metadata" style="color: #8F938F">
+                                                    <input type="hidden" id="hiddenIdTwo" th:value="${commentTwo.getId()}">
+                                                    <a onclick="deleteTwo()">删除</a>
+                                                </div>
+                                            </th:block>
+                                            <div class="text" th:text="${commentTwo.getContent()}">太赞了！ </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                </th:block>
+                            </th:block>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--文字输入区域-->
+            <div id="comment-form" class="ui form ">
+                <!--携带新闻的id回去-->
+                <input type="hidden" name="new_id" th:value="${formatNew.getId()}">
+                <!--携带新闻的标题回去-->
+                <input type="hidden" name="title" th:value="${formatNew.getTitle()}">
+                <!--默认为顶级评论-->
+                <input type="hidden" name="parent_id" value="-1">
+
+                <div class="field required">
+                    <textarea name="content" placeholder="请输入评论……"></textarea>
+                </div>
+                <div class="ui right aligned container">
+                    <!--m-mobile-wide充满外部容器宽度 m-margin-tb-bottom-tine设置距离-->
+<!--                    <div class="field m-mobile-wide m-margin-bottom-tine required">-->
+<!--                        <div class="ui input left icon">-->
+<!--                            <i class="user icon"></i>-->
+<!--                            <input type="text" readonly="readonly" name="nickname" placeholder="姓名" class="text" th:value="${session.loginPerson}!=null ? ${session.loginPerson.getName()}">-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="field m-mobile-wide m-margin-bottom-tine required">-->
+<!--                        <div class="ui input left icon">-->
+<!--                            <i class=" mail  icon"></i>-->
+<!--                            <input type="text" readonly="readonly" name="phone"  placeholder="联系方式" class="text" th:value="${session.loginPerson}!=null ? ${session.loginPerson.getPhone()}">-->
+<!--                        </div>-->
+<!--                    </div>-->
+                    <div class="field m-mobile-wide m-margin-bottom-tine">
+                        <button id="commentpost-btn" type="button" class="ui  teal button basic m-mobile-wide m-margin-bottom-tine"><i class="icon edit"></i>发布</button>
+                    </div>
+
+                </div>
+                <!--表单验证提示-->
+                <div class="ui error message"></div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--工具条-->
+<div class="m-fixed m-right-bottom m-padded-tine">
+    <div class="ui vertical icon buttons ">
+        <!--回到最上面-->
+        <div id="toTop-button"  class="ui icon button"><i class="icon angle  up"></i></div>
+        <!--指定跳转到留言区域-->
+        <div id="toComment-button"  class="ui teal button">留言</div>
+        <!--生成微信阅读的二维码-->
+        <button class="ui weixin icon button green"><i class="weixin icon"></i></button>
+        <!--回到最下面-->
+        <div id="toFooter-button"  class="ui icon button"><i class="icon angle  down"></i></div>
+    </div>
+</div>
+
+<!--弹出的二维码-->
+<div id="qrcode" class="ui weixinCode flowing popup  transition hidden" style="width: 130px !important;">
+
+</div>
+
+
+
+
+
+<!--底部footer-->
+<footer th:insert="c_fragment :: footer"></footer>
+
+
+<th:block th:insert="c_fragment::script"></th:block>
+
+
+
+
+<script th:inline="javascript">
+
+    /*.是通过class获得按钮，当我们触发按钮的时候来取消或者添加相应的样式
+用于移动端展示目录的按钮，但是pc端没有*/
+    $('.menu-button').click(function () {
+        $('.menu-control').toggleClass('m-mobile-hide');
+    });
+
+    /*点击头像弹出注销的下拉框*/
+    $('.ui.dropdown')
+        .dropdown();
+
+
+    //删除评论
+    /*单个删除*/
+    function deleteOne(id) {
+        var commentId =id;
+        var t = confirm("您确认要删除该评论？");
+        if (t==false){
+            return false;
+        }else {
+            window.location.replace("/personShow/deleteComment/"+commentId);
+        }
+    }
+
+    /*删除回复*/
+    function deleteTwo() {
+        var commentId =$("#hiddenIdTwo").val();
+        var t = confirm("您确认要删除该评论？");
+        if (t==false){
+            return false;
+        }else {
+            window.location.replace("/personShow/deleteComment/"+commentId);
+        }
+    }
+
+
+
+
+    // .通过class中的属性来设置当鼠标移动到微信图标上面的时候，弹出微信的二维码
+    //先通过按钮获得弹出 然后设置要弹出的内容 设置触发的条件以及弹窗的位置
+    $('.weixin').popup({
+        popup: $('.weixinCode'),
+        position:'left center'
+    })
+
+    var serurl = "127.0.0.1:8888";
+    var url=/*[[@{/personShow/new/{id}(id=${formatNew.getId()})}]]*/"";
+    /*生成二维码插件*/
+    var qrcode = new QRCode(document.getElementById("qrcode"), {
+        text: serurl+url,
+        width: 120,
+        height: 120,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+    });
+
+
+    /*关闭消息提示框*/
+    $('.message .close')
+        .on('click', function() {
+            $(this)
+                .closest('.message')
+                .transition('fade')
+            ;
+        });
+
+    /*调用平滑滚动到顶部*/
+    $('#toTop-button').click(function () {
+        /*0表示滚动到最顶端,500用于控制速度*/
+        $(window).scrollTo(0,600);
+    });
+
+    /*调用平滑滚动到留言区域*/
+    $('#toComment-button').click(function () {
+        /*0表示滚动到最顶端,500用于控制速度*/
+        $(window).scrollTo($("#comment-container"),600);
+    });
+
+    /*调用平滑滚动到最底部*/
+    $('#toFooter-button').click(function () {
+        /*0表示滚动到最顶端,500用于控制速度*/
+        $(window).scrollTo($("#footer-container"),600);
+    });
+
+
+    /*验证内容不能为空*/
+    $('.ui.form').form({
+        fields:{
+            /*这里往上都是固定的内容*/
+            /*title表示你要限定的元素input中的name属性值*/
+            content:{
+                identifier:'content',
+                /*指定规则*/
+                rules:[{
+                    type:'empty',
+                    prompt:'请输入评论内容'
+                }]
+            },
+            nickname:{
+                identifier:'nickname',
+                /*指定规则*/
+                rules:[{
+                    type:'empty',
+                    prompt:'请输入用户名'
+                }]
+            },
+            phone:{
+                identifier:'phone',
+                /*指定规则*/
+                rules:[{
+                    type:'empty',
+                    prompt:'请输入联系方式'
+                }]
+            }
+        }
+    });
+
+    //发送评论
+    $('#commentpost-btn').click(function () {
+        var boo = $('.ui.form').form('validate form');
+        if (boo){
+            postData();
+            console.log('校验成功')
+        }else{
+            console.log('校验失败')
+        }
+
+    });
+
+    //提交评论
+    function postData() {
+        //这个是提交数据的地址
+        $("#comment-container").load(/*[[@{/personShow/comments}]]*/"/personShow/comments",{
+            "parent_id" :$("[name='parent_id']").val(),
+            "new_id" :$("[name='new_id']").val(),
+            "title" :$("[name='title']").val(),
+            "content" :$(" [name='content']").val()
+        },function (responseTxt,statusTxt, xhr){
+            //设置评论之后滚动到评论的最上面
+            $(window).scrollTo($("#comment-container"),600);
+            clearContent();
+        });
+    }
+
+    //回复之后清空内容
+    function clearContent() {
+        //清空内容
+        $(" [name='content']").val('');
+        //设置父级评论的id为-1（即为空）
+        $("[name='parent_id']").val(-1);
+        //把回复的昵称清除
+        $("[name='content']").attr("placeholder","请输入评论....");
+    }
+        
+    //回复评论
+    function reply(obj) {
+        //获取的父级评论的id
+        var commentId = $(obj).data('commentid');
+        var commentNickname = $(obj).data('commentnickname');
+        //在回复框中会展示回复对象的昵称
+        $("[name='content']").attr("placeholder","@"+commentNickname).focus();
+        $("[name='parent_id']").val(commentId);
+        //点击回复会滚动到评论的输入区域
+        $(window).scrollTo($("#comment-form"),500);
+    }
+
+</script>
+</body>
+</html>

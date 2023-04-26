@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="c_fragment :: head(~{::title})">
+    <meta charset="UTF-8">
+    <!--宽度等于屏幕的宽度 不缩放 便于在pc端和移动端查看  -->
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>写信</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <!--导入排版的typo插件依赖-->
+    <link rel="stylesheet" href="../static/css/typo.css">
+    <!--这是代码高亮的prism的插件依赖-->
+    <link rel="stylesheet" href="../static/lib/prism/prism.css">
+    <!--这是自定义的css-->
+    <link rel="stylesheet" href="../static/css/me.css">
+</head>
+<body>
+
+<!--导航 inverted表示黑白与否 attached圆角与否 segment形成一个分段-->
+<nav th:insert="c_fragment :: menu(5)"></nav>
+
+
+<!--中间内容-->
+<div class="m-padded-tb-big m-container-small stackable">
+    <div class="ui container stackable" >
+        <h3 class="ui dividing header">信件内容</h3>
+            <div class="ui segment">
+                <form class="ui form" th:action="${mailById.getId()}==null ? @{/personShow/allMails} : @{/personShow/updateMail/{id}(id=${mailById.getId()})}" method="post">
+                    <div class="field">
+                        <label>信件标题</label>
+                        <input name="title" placeholder="请输入标题...." th:value="${mailById.getTitle()}">
+                    </div>
+                    <div class="field">
+                        <label>信件类型</label>
+                        <div class="ui fluid  search selection action dropdown">
+                            <input type="hidden" name="qtype" th:value="${mailById.getQtype()}">
+                            <i class="icon dropdown"></i>
+                            <div class="default text">信件类型</div>
+                            <div class="menu">
+                                <div class="item" data-value="投诉">投诉</div>
+                                <div class="item" data-value="举报">举报</div>
+                                <div class="item" data-value="求助">求助</div>
+                                <div class="item" data-value="咨询">咨询</div>
+                                <div class="item" data-value="建议">建议</div>
+                                <div class="item" data-value="其他">其他</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label>信件内容</label>
+                        <textarea name="question" placeholder="请输入信件内容...." th:text="${mailById.getQuestion()}"></textarea>
+                    </div>
+
+                    <!--表单验证的错误信息展示-->
+                    <div class="ui error message"></div>
+
+                    <!--返回保存和发布按钮-->
+                    <div class="ui right aligned container">
+                        <!--onclick事件返回上一个页面-->
+                        <button class="ui button" type="button" onclick="window.history.go(-1)">返回</button>
+                        <button class="ui teal button">提交</button>
+                    </div>
+                </form>
+            </div>
+    </div>
+</div>
+
+
+
+<!--底部footer-->
+<footer th:insert="c_fragment :: footer"></footer>
+
+
+<th:block th:insert="c_fragment::script"></th:block>
+
+
+
+<script th:inline="javascript">
+
+    /*.是通过class获得按钮，当我们触发按钮的时候来取消或者添加相应的样式
+用于移动端展示目录的按钮，但是pc端没有*/
+    $('.menu-button').click(function () {
+        $('.menu-control').toggleClass('m-mobile-hide');
+    });
+
+    /*点击头像弹出注销的下拉框*/
+    $('.ui.dropdown')
+        .dropdown();
+
+
+    /*关闭消息提示框*/
+    $('.message .close')
+        .on('click', function() {
+            $(this)
+                .closest('.message')
+                .transition('fade')
+            ;
+        });
+
+
+
+    /*验证内容不能为空*/
+    $('.ui.form').form({
+        fields:{
+            /*这里往上都是固定的内容*/
+            /*title表示你要限定的元素input中的name属性值*/
+            qtype:{
+                identifier:'qtype',
+                /*指定规则*/
+                rules:[{
+                    type:'empty',
+                    prompt:'信件类型不能为空'
+                }]
+            },
+            question:{
+                identifier:'question',
+                /*指定规则*/
+                rules:[{
+                    type:'empty',
+                    prompt:'信件内容不能为空'
+                }]
+            },
+            title:{
+                identifier:'title',
+                /*指定规则*/
+                rules:[{
+                    type:'empty',
+                    prompt:'信件标题不能为空'
+                }]
+            }
+
+        }
+    });
+
+
+
+</script>
+</body>
+</html>

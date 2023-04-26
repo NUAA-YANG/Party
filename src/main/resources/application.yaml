@@ -1,0 +1,49 @@
+server:
+  port: 8888
+
+#mail:
+#  fromMail:
+#    fromAddress: 2997357856@qq.com
+
+spring:
+  mail:
+    # 发送邮件设定为qq邮箱发送
+    host: smtp.qq.com
+#    开通了SMTP服务的邮箱账号
+    username: 2997357856@qq.com
+#    授权码，不是密码
+    password: dvzzefhkhhzadcgh
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+      default-encoding: UTF-8
+  thymeleaf:
+    mode: HTML
+  datasource:
+    username: root
+    password: 123456
+    url: jdbc:mysql://localhost:3306/party?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8&useSSL=false
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  main:
+    allow-bean-definition-overriding: true
+
+
+# 日志文件设置
+logging:
+  level:
+    root: info
+    com.yzx: debug
+  # 指定生成的日志文件
+  file:
+    name: log/party.log
+
+
+mybatis:
+  # 用于指定实体类所在的包（就是实现增删改查的类对象所在的包名）
+  type-aliases-package: com.yzx.party.vo
+  # xml的路径
+  mapper-locations: classpath:mybatis/mapper/*.xml

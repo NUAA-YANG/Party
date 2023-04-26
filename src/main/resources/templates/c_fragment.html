@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <!--宽度等于屏幕的宽度 不缩放 便于在pc端和移动端查看  -->
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title th:replace="${title}">首页</title>
+<!--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" >-->
+    <link rel="stylesheet" th:href="@{/lib/semanticui/dist/semantic.min.css}">
+    <!--自定义css-->
+    <link rel="stylesheet" href="../static/css/me.css" th:href="@{/css/me.css}">
+    <!--导入排版的typo插件依赖-->
+    <link rel="stylesheet" href="../static/css/typo.css" th:href="@{/css/typo.css}">
+    <!--这是代码高亮的prism的插件依赖-->
+    <link rel="stylesheet" href="../static/lib/prism/prism.css" th:href="@{/lib/prism/prism.css}">
+</head>
+<body>
+
+<!--导航 inverted表示黑白与否 attached圆角与否 segment形成一个分段-->
+<nav th:fragment="menu(n)" class="ui inverted attached segment m-padded-tb-mini m-shadow-small">
+        <!--ui container和stackable是响应式容器(两个必须要一起写) -->
+        <div class="ui container">
+            <div class="ui inverted menu secondary stackable">
+                <h2 class="ui red header item">智慧党建</h2>
+                <!--icon表示会隔开两个单位来放置图标 m-mobile-hide手机端的折叠目录-->
+                <a th:href="@{/personShow/index}" class="item menu-control m-mobile-hide" th:classappend="${n==1} ? 'active'"><i class="icon desktop"></i>学校党建新闻</a>
+                <!--默认进入的是第一个专业-->
+                <a th:href="@{/personShow/collegenews/majors/-1}" class="item menu-control m-mobile-hide" th:classappend="${n==2} ? 'active'"><i class="icon paper plane"></i>学院党建新闻</a>
+                <!--数字用于切换会议类型-->
+                <a th:href="@{/personShow/allMeetings/1}" class=" item  menu-control m-mobile-hide" th:classappend="${n==4} ? 'active'"><i class="icon  comment alternate "></i>三会一课</a>
+                <!--数字用于切换书信类型-->
+                <a th:href="@{/personShow/allMails/2}" class=" item  menu-control m-mobile-hide" th:classappend="${n==5} ? 'active'"><i class="icon  envelope  "></i>书记信箱</a>
+                <a th:href="@{/personShow/personalInfo}" class="item menu-control m-mobile-hide" th:classappend="${n==3} ? 'active'"><i class="icon id badge"></i>我的主页</a>
+                <th:block th:if="${session.get('loginPerson')}==null">
+                    <div class=" item menu right stackable stackable ">
+                        <div class="ui item">
+                            <div class="menu">
+                                <a th:href="@{/personShow}" class="teal item menu-control m-mobile-hide"><i class="icon sign-in"></i>去登录</a>
+                            </div>
+                        </div>
+                    </div>
+                </th:block>
+                <th:block th:if="${session.get('loginPerson')}!=null">
+
+<!--                    <div class="item right stackable menu-control m-mobile-hide">-->
+<!--                        <form name="search-form" id="search-form" method="post" th:action="@{/personShow/search}" target="_blank">-->
+<!--                            <div class="ui input icon">-->
+<!--                                <input type="text" th:value="${queryWord}" name="queryWord" placeholder="请输入内容">-->
+<!--                                <i onclick="document.forms['search-form'].submit()" class="icon search link"></i>-->
+<!--                            </div>-->
+<!--                        </form>-->
+<!--                    </div>-->
+
+                    <div class=" item right menu stackable ">
+                        <div class="ui dropdown item">
+                            <div class="text">
+                                <img class="ui avatar image" src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fc-ssl.duitang.com%2Fuploads%2Fitem%2F202004%2F22%2F20200422115716_mvgco.jpg&refer=http%3A%2F%2Fc-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1641542691&t=bf60fc89ecc8c8026c4f7478859cdad6"
+                                     alt="">
+                                [[${session.get('loginPerson').getName()}]]
+                            </div>
+                            <!--下拉菜单-->
+                            <i class="dropdown icon"></i>
+                            <div class="menu">
+                                <a th:href="@{/personShow/logout}" class="item">注销</a>
+                            </div>
+                        </div>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+        <!--m-top-right按钮显示在最右上角 ；pc端的不展示按钮 手机端才展示 ; menu-button为自定义的方便jquery获得按钮，无意义-->
+        <a href="#" class="ui icon menu-button black button m-top-right m-mobile-show">
+            <i class="icon sidebar">
+
+            </i>
+        </a>
+    </nav>
+
+
+<!--第一个二级导航 用于我的主页-->
+<div th:fragment="menuOne(n)" class="ui attached pointing menu">
+    <div class="ui container">
+        <div class="right menu">
+            <a th:href="@{/personShow/personalInfo}" class="item" th:classappend="${n==1} ? 'teal active'">个人信息</a>
+            <a th:href="@{/personShow/toUploadFile}" class="item " th:classappend="${n==2} ? 'teal active'">文件上传</a>
+        </div>
+    </div>
+</div>
+
+<!--第二个二级导航 用于三会一课-->
+<div th:fragment="menuTwo(n)" class="ui attached pointing menu">
+    <div class="ui container">
+        <div class="right menu">
+            <a th:href="@{/personShow/allMeetings/1}" class="item" th:classappend="${n==1} ? 'teal active'"><input type="hidden" name="mtype"  th:value="支部党员大会">支部委员大会</a>
+            <a th:href="@{/personShow/allMeetings/2}" class="item" th:classappend="${n==2} ? 'teal active'"><input type="hidden" name="mtype"  th:value="党小组会">党小组会</a>
+            <a th:href="@{/personShow/allMeetings/3}" class="item" th:classappend="${n==3} ? 'teal active'"><input type="hidden" name="mtype"  th:value="支委会">支委会</a>
+            <a th:href="@{/personShow/allMeetings/4}" class="item" th:classappend="${n==4} ? 'teal active'"><input type="hidden" name="mtype"  th:value="党课">党课</a>
+            <a th:href="@{/personShow/allMeetings/5}" class="item" th:classappend="${n==5} ? 'teal active'"><input type="hidden" name="mtype"  th:value="其他会议">其他会议</a>
+        </div>
+    </div>
+</div>
+
+    <!--底部footer-->
+<footer th:fragment="footer" class="ui inverted vertical segment m-padded-tb-massive stackable">
+        <!--切分的四个模块-->
+        <div  class="ui center aligned container">
+            <!--grid切分布局段落 总共可以分为16份;divided分割样式-->
+            <div id="footer-container" class="ui inverted divided grid">
+                <div class="three wide column">
+                    <img src="../static/images/QQCode.png" th:src="@{/images/QQCode.png}" class="ui image rounded" style="width: 115px" alt="">
+                </div>
+                <div class="four wide column">
+                    <h4 class="ui inverted header">学习强国最新文章</h4>
+                    <!--默认纵向切割-->
+                    <div class="ui inverted link list">
+                        <a href="#" class="item">国家主席习近平发表二O二二年新年贺词</a>
+                        <a href="#" class="item">中俄两国元首互致新年贺电</a>
+                        <a href="#" class="item">习近平:在全国政协新年茶话会上的讲话</a>
+                    </div>
+                </div>
+                <div class="four wide column">
+                    <h4 class="ui inverted header">负责人联系方式</h4>
+                    <div class="ui inverted link list">
+                        <p  class="item">Email：yangzixian0306@163.com</p>
+                        <p  class="item">QQ：2997357856</p>
+                        <p  class="item">微信：13879786627</p>
+                    </div>
+                </div>
+                <div class="five wide column">
+                    <h4 class="ui inverted header">学校信息</h4>
+                    <div class="ui inverted link list">
+                        <p class="item">邮编：341000</p>
+                        <p class="item">联系电话：87046485</p>
+                        <p class="item">地址：江西省南昌市青山湖区处华东交通大学</p>
+                    </div>
+                </div>
+            </div>
+            <!--画线-->
+            <div class="ui inverted section divider"></div>
+            <p class="m-text-spaced m-opacity-mini">Copyright © 2021-2022 YZX Designer by YZX in ECJTU</p>
+        </div>
+    </footer>
+
+
+<th:block th:fragment="script">
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js" th:src="@{/js/jquery-3.6.0.min.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js" th:src="@{/lib/semanticui/dist/semantic.min.js}"></script>
+    <!--平滑滚动-->
+    <script src="//cdn.jsdelivr.net/npm/jquery.scrollto@2.1.2/jquery.scrollTo.min.js" th:src="@{/js/jquery.scrollTo.min.js}"></script>
+    <!--可视化图表cdn-->
+    <script src="https://cdn.bootcss.com/echarts/4.6.0/echarts.min.js" th:src="@{/js/echarts.min.js}"></script>
+    <!--导入代码高亮的prism.css的依赖-->
+    <script src="../static/lib/prism/prism.js" th:src="@{/lib/prism/prism.js}"></script>
+    <!--导入二维码生成的qrcode的依赖-->
+    <script src="../static/lib/qrcode/qrcode.js" th:src="@{/lib/qrcode/qrcode.js}"></script>
+    <!--导入markdown的js依赖-->
+    <script src="../../static/lib/editormd/editormd.min.js" th:src="@{/lib/editormd/editormd.min.js}"></script>
+</th:block>
+
+
+</body>
+</html>

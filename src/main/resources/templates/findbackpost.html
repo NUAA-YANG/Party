@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="collegeadmin/collegeadmin_fragment :: head(~{::title})">
+    <meta charset="UTF-8" >
+    <!--宽度等于屏幕的宽度 不缩放 便于在pc端和移动端查看  -->
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>找回密码</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <link rel="stylesheet" href="../../static/css/me.css">
+</head>
+<body>
+
+
+<div class="ui middle aligned center aligned grid">
+    <div class="m-container-small m-padded-tb-massive" style="max-width: 30em !important;">
+        <div class="ui center aligned container ">
+            <div class="column">
+                <h2 class="ui red image header ">
+                    <img src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fku.90sjimg.com%2Felement_origin_min_pic%2F16%2F11%2F25%2F929afcf8dee77cd7a9db88d3ab94821d.jpg&refer=http%3A%2F%2Fku.90sjimg.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1646014581&t=dd7c6f139e5c698b60a975e24b7ebf07"
+                         class=" ui image rounded" >
+                    <div class="content">
+                        找回密码
+                    </div>
+                </h2>
+
+                <div class="ui ordered mini steps">
+                    <div class="completed step">
+                        <div class="content">
+                            <div class="title">验证码</div>
+                            <div class="description">发送验证码</div>
+                        </div>
+                    </div>
+                    <div class="active step">
+                        <div class="content">
+                            <div class="title">密码重置</div>
+                            <div class="description">输入重置的密码</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--发送验证码提示-->
+                <div class="ui success mini message" th:unless="${#strings.isEmpty(succeedMessage)}">
+                    <i class="icon close"></i>
+                    <div class="header">提示:</div>
+                    <p th:text="${succeedMessage}"></p>
+                </div>
+
+                <form class="ui large form" method="post" th:action="@{/personShow/findBack/{id}(id=${forgetByUsernameAndEmail.getId()})}">
+                    <div class="ui stacked segment">
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="barcode icon"></i>
+                                <input type="text"  name="varcode" placeholder="请输入验证码" required>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="eye slash icon"></i>
+                                <input type="email"  name="newPassword" placeholder="请输入你重置的密码" required>
+                            </div>
+                        </div>
+
+                        <button class="ui fluid large teal submit button">重置密码</button>
+                    </div>
+
+                    <!--输入空的用户名和密码的错误提示-->
+                    <div class="ui error message"></div>
+                    <!--验证错误提示-->
+                    <div class="ui negative mini message" th:unless="${#strings.isEmpty(errorMessage)}">
+                        <i class="icon close"></i>
+                        <div class="header">提示:</div>
+                        <p th:text="${errorMessage}"></p>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<th:block th:insert="collegeadmin/collegeadmin_fragment :: script"></th:block>
+
+
+<script>
+
+    /*关闭消息提示框*/
+    $('.message .close')
+        .on('click', function() {
+            $(this)
+                .closest('.message')
+                .transition('fade')
+            ;
+        });
+
+    /*验证内容不能为空*/
+    $('.ui.form').form({
+        fields:{
+            /*这里往上都是固定的内容*/
+            /*title表示你要限定的元素input中的name属性值*/
+            varcode:{
+                identifier:'varcode',
+                /*指定规则*/
+                rules:[{
+                    type:'empty',
+                    prompt:'验证码不能为空'
+                }]
+            },
+            newPassword:{
+                identifier:'newPassword',
+                /*指定规则*/
+                rules:[{
+                    type:'empty',
+                    prompt:'重置密码不能为空'
+                }]
+            }
+
+        }
+    });
+</script>
+
+
+</body>
+</html>

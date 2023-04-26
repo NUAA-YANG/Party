@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="collegeadmin/collegeadmin_fragment :: head(~{::title})">
+    <meta charset="UTF-8" >
+    <!--宽度等于屏幕的宽度 不缩放 便于在pc端和移动端查看  -->
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>找回密码</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <link rel="stylesheet" href="../../static/css/me.css">
+</head>
+<body>
+
+
+<div class="ui middle aligned center aligned grid">
+    <div class="m-container-small m-padded-tb-massive" style="max-width: 30em !important;">
+        <div class="ui  container ">
+            <div class="ui link cards">
+                <div class="card">
+                    <div class="image">
+                        <img src="https://semantic-ui.com/images/avatar2/large/matthew.png" th:src="@{/images/Findback.png}">
+                    </div>
+                    <div class="content">
+                        <div class="header center aligned">重置信息如下</div>
+                        <div class="meta center aligned">
+                            ======================
+                        </div>
+                        <div class="ui divided selection list">
+                            <div class="item">
+                                <div class="ui teal horizontal label" >用户名：</div>
+                                <p3 class="center aligned" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[[${username}]]</p3>
+                            </div>
+                            <div class="item divided">
+                                <div class="ui teal horizontal label" >密码：</div>
+                                <p3  class="center aligned" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[[${newPassword}]]</p3>
+                            </div>
+                        </div>
+                        <div class="ui bottom attached button">
+                            <a th:href="@{/admin/toLoginPage}" style="color:black;"><i class="sign-in icon"></i> 前往登录 </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<th:block th:insert="collegeadmin/collegeadmin_fragment :: script"></th:block>
+
+
+<script>
+    /*验证内容不能为空*/
+    $('.ui.form').form({
+        fields:{
+            /*这里往上都是固定的内容*/
+            /*title表示你要限定的元素input中的name属性值*/
+            username:{
+                identifier:'username',
+                /*指定规则*/
+                rules:[{
+                    type:'empty',
+                    prompt:'请输入用户名'
+                }]
+            }
+
+        }
+    });
+</script>
+
+
+</body>
+</html>

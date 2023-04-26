@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="c_fragment :: head(~{::title})">
+    <meta charset="UTF-8">
+    <!--宽度等于屏幕的宽度 不缩放 便于在pc端和移动端查看  -->
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>书信详情</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <!--导入排版的typo插件依赖-->
+    <link rel="stylesheet" href="../static/css/typo.css">
+    <!--这是代码高亮的prism的插件依赖-->
+    <link rel="stylesheet" href="../static/lib/prism/prism.css">
+    <!--这是自定义的css-->
+    <link rel="stylesheet" href="../static/css/me.css">
+</head>
+<body>
+
+<!--导航 inverted表示黑白与否 attached圆角与否 segment形成一个分段-->
+<nav th:insert="c_fragment :: menu(5)"></nav>
+
+
+
+<!--中间内容-->
+<div class="m-padded-tb-big m-container-small stackable">
+    <div class="ui container stackable" >
+        <div class="ui segment">
+            <h3 class="ui dividing header">书信详情</h3>
+            <div class="ui positive message">
+                <form class="ui form">
+                    <div class="field">
+                        <label>信件标题</label>
+                        <input name="title" placeholder="请输入标题...." readonly="readonly" th:value="${mailById.getTitle()}">
+                    </div>
+                    <div class="field">
+                        <label>信件类型</label>
+                        <select disabled="disabled" name="qtype" id="qtype" class="ui dropdown search">
+                            <option value="">信件类型</option>
+                            <!--新建重复的时候，或者是修改的时候-->
+                            <option th:selected="${mailById.getQtype()}"
+                                    th:text="${mailById.getQtype()}"
+                                    th:value="${mailById.getQtype()}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label>信件内容</label>
+                        <textarea th:text="${mailById.getQuestion()}" readonly="readonly"></textarea>
+                    </div>
+                </form>
+            </div>
+
+            <!--只有回复了才展示内容-->
+            <th:block th:if="${mailById.getAnswer()}!=null">
+                <h3 class="ui dividing header">回复内容</h3>
+                <div class="ui warning message">
+                    <form class="ui form">
+                        <div class="two fields">
+                            <div class="field">
+                                <label>回复者姓名</label>
+                                <input type="text" th:value="${mailById.getAdminname()}" readonly="readonly">
+                            </div>
+                            <div class="field">
+                                <label>回复时间</label>
+                                <input th:value="${#dates.format(mailById.getReplaytime(),'yyyy-MM-dd')}" readonly="readonly" type="date">
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label>回复内容</label>
+                            <textarea th:text="${mailById.getAnswer()}" readonly="readonly"></textarea>
+                        </div>
+                    </form>
+                </div>
+            </th:block>
+        </div>
+    </div>
+</div>
+
+
+
+<!--底部footer-->
+<footer th:insert="c_fragment :: footer"></footer>
+
+
+<th:block th:insert="c_fragment::script"></th:block>
+
+
+
+<script th:inline="javascript">
+
+    /*.是通过class获得按钮，当我们触发按钮的时候来取消或者添加相应的样式
+用于移动端展示目录的按钮，但是pc端没有*/
+    $('.menu-button').click(function () {
+        $('.menu-control').toggleClass('m-mobile-hide');
+    });
+
+    /*点击头像弹出注销的下拉框*/
+    $('.ui.dropdown')
+        .dropdown();
+
+
+    /*关闭消息提示框*/
+    $('.message .close')
+        .on('click', function() {
+            $(this)
+                .closest('.message')
+                .transition('fade')
+            ;
+        });
+
+
+
+    /*验证内容不能为空*/
+    $('.ui.form').form({
+        fields:{
+            /*这里往上都是固定的内容*/
+            /*title表示你要限定的元素input中的name属性值*/
+            content:{
+                identifier:'content',
+                /*指定规则*/
+                rules:[{
+                    type:'empty',
+                    prompt:'请输入发言内容'
+                }]
+            },
+            nickname:{
+                identifier:'nickname',
+                /*指定规则*/
+                rules:[{
+                    type:'empty',
+                    prompt:'请输入用户名'
+                }]
+            },
+            phone:{
+                identifier:'phone',
+                /*指定规则*/
+                rules:[{
+                    type:'empty',
+                    prompt:'请输入联系方式'
+                }]
+            }
+        }
+    });
+
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="collegeadmin/collegeadmin_fragment :: head(~{::title})">
+    <meta charset="UTF-8" >
+    <!--宽度等于屏幕的宽度 不缩放 便于在pc端和移动端查看  -->
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>登录</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <link rel="stylesheet" href="../../static/css/me.css">
+</head>
+<body>
+<br>
+<br>
+<br>
+<br>
+
+<div class="ui middle aligned center aligned grid">
+    <div class="m-container-small m-padded-tb-massive" style="max-width: 30em !important;">
+        <div class="ui center aligned container ">
+            <div class="column">
+                <h2 class="ui red image header ">
+                    <img src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fku.90sjimg.com%2Felement_origin_min_pic%2F16%2F11%2F25%2F929afcf8dee77cd7a9db88d3ab94821d.jpg&refer=http%3A%2F%2Fku.90sjimg.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1646014581&t=dd7c6f139e5c698b60a975e24b7ebf07"
+                          class=" ui image rounded" >
+                    <div class="content">
+                        智慧党建管理后台登录
+                    </div>
+                </h2>
+                <form class="ui large form" method="post" th:action="@{/admin/login}">
+                    <div class="ui stacked segment">
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="user icon"></i>
+                                <input type="text" name="username" placeholder="请输入用户名" required>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="lock icon"></i>
+                                <input type="password" name="password" placeholder="请输入密码" required>
+                            </div>
+                        </div>
+                        <button class="ui fluid large teal submit button">登 录</button>
+                    </div>
+
+                    <!--输入空的用户名和密码的错误提示-->
+                    <div class="ui error message"></div>
+                    <!--用户名和密码错误的提示 非空才会提示-->
+                    <div class="ui message negative mini" th:unless="${#strings.isEmpty(message)}" th:text="${message}"></div>
+
+                </form>
+                <br>
+                <div class="ui  grid stackable">
+                    <div class="eight wide column">
+                        <a th:href="@{/personShow/index}">不登录，直接前往主页 </a>
+                    </div>
+                    <div class="eight wide column">
+                         <a th:href="@{/admin/toFindBack}" target="_blank">忘记密码</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:insert="collegeadmin/collegeadmin_fragment :: script"></th:block>
+
+
+<script>
+    /*验证内容不能为空*/
+    $('.ui.form').form({
+        fields:{
+            /*这里往上都是固定的内容*/
+            /*title表示你要限定的元素input中的name属性值*/
+            username:{
+                identifier:'username',
+                /*指定规则*/
+                rules:[{
+                    type:'empty',
+                    prompt:'请输入用户名'
+                }]
+            },
+            password:{
+                identifier:'password',
+                /*指定规则*/
+                rules:[{
+                    type:'empty',
+                    prompt:'请输入密码'
+                }]
+            }
+        }
+    });
+</script>
+
+
+</body>
+</html>

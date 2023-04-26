@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="c_fragment :: head(~{::title})">
+    <meta charset="UTF-8" >
+    <!--宽度等于屏幕的宽度 不缩放 便于在pc端和移动端查看  -->
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>个人信息修改</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <link rel="stylesheet" href="../../static/css/me.css">
+</head>
+<body>
+
+<!--导航 inverted表示黑白与否 attached圆角与否 segment形成一个分段-->
+<nav th:insert="c_fragment :: menu(3)"></nav>
+
+
+
+<!--中间内容-->
+<div class="m-padded-tb-big m-container-small">
+    <div class="ui container">
+        <h3 class="ui dividing header">个人信息</h3>
+
+        <!--验证错误提示-->
+        <div class="ui negative mini message" th:unless="${#strings.isEmpty(errorMessage)}">
+            <i class="icon close"></i>
+            <div class="header">提示:</div>
+            <p th:text="${errorMessage}"></p>
+        </div>
+
+        <div class="ui segment">
+            <form class="ui form" method="post"  th:action="@{/personShow/personalInfoInput/{id}(id=${loginPerson.getId()})}">
+                <div class="field">
+                    <div class="fields">
+
+
+                        <div class="three wide field" >
+                            <label>用户名(不可修改)</label>
+                            <div class="field">
+                                <input type="text" readonly="readonly" th:value="${loginPerson.getUsername()}" name="username" placeholder="请输入用户名">
+                            </div>
+                        </div>
+
+                        <div class="six wide field">
+                            <label>原始密码</label>
+                            <div class="field">
+                                <input type="text" name="originalpassword" placeholder="若需要修改信息，必须输入原始密码">
+                            </div>
+                        </div>
+
+                        <div class="seven wide field">
+                            <label>修改密码</label>
+                            <div class="field">
+                                <input type="text"  name="password" placeholder="不输入则不修改密码，若输入字符则为修改密码">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="three fields">
+                        <div class="field">
+                            <label>人员姓名</label>
+                            <div class="field">
+                                <input type="text" th:value="${loginPerson.getName()}" name="name" placeholder="请输入姓名">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>电话</label>
+                            <div class="field">
+                                <input type="text" th:value="${loginPerson.getPhone()}" name="phone" placeholder="请输入电话">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>邮箱</label>
+                            <div class="field">
+                                <input type="email" th:value="${loginPerson.getEmail()}" name="email" placeholder="请输入邮箱">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="two fields">
+                    <div class="field">
+                        <label>所属专业(不可修改)</label>
+                        <select readonly="readonly" disabled="disabled" name="major_id" id="major_id" class="ui dropdown search">
+                            <option value="">所属专业</option>
+                            <!--新建重复的时候，或者是修改的时候-->
+                            <option th:selected="${loginPerson.getMajor_id()==majorOne.getId()}"
+                                    th:each="majorOne:${majorList}"
+                                    th:text="${majorOne.getName()}"
+                                    th:value="${majorOne.getId()}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>详细班级(部门单位)</label>
+                        <div class="field">
+                            <input type="text" th:value="${loginPerson.getClassname()}" name="classname" placeholder="请输入班级">
+                        </div>
+                    </div>
+                </div>
+                <div class="three fields">
+
+                    <div class="field">
+                        <label>申请入党时间(不可编辑)</label>
+                        <div class="field">
+                            <input type="date" readonly="readonly" th:value="${#dates.format(loginPerson.getApplyjoinpartytime(),'yyyy-MM-dd')}" name="applyjoinpartytime" placeholder="请输入入党时间">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label>转预时间(不可编辑)</label>
+                            <div class="field">
+                                <input type="date" readonly="readonly" th:value="${#dates.format(loginPerson.getPreparejoinpartytime(),'yyyy-MM-dd')}" name="preparejoinpartytime" placeholder="请输入入党时间">
+                            </div>
+                    </div>
+
+                    <div class="field">
+                        <label>转正时间(不可编辑)</label>
+                        <div class="field">
+                            <input type="date" readonly="readonly" th:value="${#dates.format(loginPerson.getJoinpartytime(),'yyyy-MM-dd')}" name="joinpartytime" placeholder="请输入入党时间">
+                        </div>
+                    </div>
+                </div>
+
+                <!--表单验证的错误信息展示-->
+                <div class="ui error message"></div>
+
+                <!--返回保存和发布按钮-->
+                <div class="ui right aligned container">
+                    <!--onclick事件返回上一个页面-->
+                    <button class="ui button" type="button" onclick="window.history.go(-1)">返回</button>
+                    <button class="ui teal button">提交</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!--底部footer-->
+<footer th:insert="c_fragment :: footer"></footer>
+
+
+<th:block th:insert="c_fragment::script"></th:block>
+
+
+<!-- .是通过class获得按钮，当我们触发按钮的时候来取消或者添加相应的样式
+用于移动端展示目录的按钮，但是pc端没有-->
+<script>
+    $('.menu-button').click(function () {
+        $('.menu-control').toggleClass('m-mobile-hide');
+    });
+
+    // #是通过按钮id来弹出赞赏的二维码
+    //先通过按钮获得弹出 然后设置要弹出的内容 设置触发的条件以及弹窗的位置
+    $('#payButton').popup({
+        popup: $('.payCode.popup'),
+        on:'click',
+        position:'bottom center'
+    })
+
+    /*点击头像弹出注销的下拉框*/
+    $('.ui.dropdown')
+        .dropdown();
+
+    /*关闭消息提示框*/
+    $('.message .close')
+        .on('click', function() {
+            $(this)
+                .closest('.message')
+                .transition('fade')
+            ;
+        });
+
+    //移除不可编辑，否则后台无法获取值
+    $("#major_id").removeAttr("disabled");
+
+    /*验证内容不能为空*/
+    $('.ui.form').form({
+        fields:{
+            /*这里往上都是固定的内容*/
+            /*title表示你要限定的元素的name属性*/
+            username:{
+                identifier:'username',
+                /*指定规则*/
+                rules:[{
+                    type:'empty',
+                    prompt:'用户名不能为空'
+                }]
+            },
+            originalpassword:{
+                identifier:'originalpassword',
+                /*指定规则*/
+                rules:[{
+                    type:'empty',
+                    prompt:'原始密码不能为空'
+                }]
+            },
+            name:{
+                identifier:'name',
+                /*指定规则*/
+                rules:[{
+                    type:'empty',
+                    prompt:'人员名字不能为空'
+                }]
+            },
+            phone:{
+                identifier:'phone',
+                /*指定规则*/
+                rules:[{
+                    type:'empty',
+                    prompt:'电话不能为空'
+                }]
+            },
+            major_id:{
+                identifier:'major_id',
+                /*指定规则*/
+                rules:[{
+                    type:'empty',
+                    prompt:'所属专业不能为空'
+                }]
+            },
+            classname:{
+                identifier:'classname',
+                /*指定规则*/
+                rules:[{
+                    type:'empty',
+                    prompt:'详细班级不能为空'
+                }]
+            },
+            applyjoinpartytime:{
+                identifier:'applyjoinpartytime',
+                /*指定规则*/
+                rules:[{
+                    type:'empty',
+                    prompt:'申请入党时间不能为空'
+                }]
+            }
+
+        }
+    });
+
+</script>
+</body>
+</html>

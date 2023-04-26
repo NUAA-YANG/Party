@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="collegeadmin/collegeadmin_fragment :: head(~{::title})">
+    <meta charset="UTF-8" >
+    <!--宽度等于屏幕的宽度 不缩放 便于在pc端和移动端查看  -->
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>人员管理</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <link rel="stylesheet" href="../../static/css/me.css">
+</head>
+<body>
+
+<!--导航 inverted表示黑白与否 attached圆角与否 segment形成一个分段-->
+<nav th:insert="collegeadmin/collegeadmin_fragment :: menu(4)"></nav>
+
+
+
+<!--中间内容-->
+<div class="m-padded-tb-big m-container-small">
+    <div class="ui container">
+        <th:block th:if="${#strings.equals(appearance,'positiveM')}">
+            <h3 class="ui dividing header">积极分子人员信息</h3>
+        </th:block>
+        <th:block th:if="${#strings.equals(appearance,'prepareM')}">
+            <h3 class="ui dividing header">预备党员人员信息</h3>
+        </th:block>
+        <th:block th:if="${#strings.equals(appearance,'officialM')}">
+            <h3 class="ui dividing header">党员人员信息</h3>
+        </th:block>
+
+        <!--验证错误提示-->
+        <div class="ui negative mini message" th:unless="${#strings.isEmpty(errorMessage)}">
+            <i class="icon close"></i>
+            <div class="header">提示:</div>
+            <p th:text="${errorMessage}"></p>
+        </div>
+
+        <div class="ui segment">
+            <form class="ui form" method="post" th:object="${persons}" th:action="${persons.getId()}==null ? @{/admin/collegeAdmin/persons/{appearance}(appearance=${appearance})} : @{/admin/collegeAdmin/personsUpdate/{id}(id=${persons.getId()})}">
+                <div class="field">
+                    <div class="fields">
+
+                        <div class="three wide field" th:if="${persons.getId()}==null">
+                            <label>用户名</label>
+                            <div class="field">
+                                <input type="text" th:value="${persons.getUsername()}" name="username" placeholder="请输入用户名">
+                            </div>
+                        </div>
+
+                        <div class="three wide field" th:if="${persons.getId()}!=null">
+                            <label>用户名(不可修改)</label>
+                            <div class="field">
+                                <input type="text" readonly="readonly" th:value="${persons.getUsername()}" name="username" placeholder="请输入用户名">
+                            </div>
+                        </div>
+
+
+                        <div class="six wide field" >
+                            <label>原始密码</label>
+                            <div class="field">
+                                <!--修改-->
+                                <th:block th:if="${persons.getId()}!=null">
+                                    <input type="text"   name="originalpassword" placeholder="若需要修改信息，必须输入原始密码">
+                                </th:block>
+                                <!--新增-->
+                                <th:block th:if="${persons.getId()}==null">
+                                    <input type="text"   name="originalpassword" placeholder="请输入密码">
+                                </th:block>
+                            </div>
+                        </div>
+
+
+                        <!--如果是新增的时候，则不展示修改密码的模块-->
+                        <th:block th:if="${persons.getId()}!=null">
+                            <div class="seven wide field">
+                                <label>修改密码</label>
+                                <div class="field">
+                                    <input type="text"  name="password" placeholder="不输入则不修改密码，若输入字符则为修改密码">
+                                </div>
+                            </div>
+                        </th:block>
+
+
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="three fields">
+                        <div class="field">
+                            <label>人员姓名</label>
+                            <div class="field">
+                                <input type="text" th:value="${persons.getName()}" name="name" placeholder="请输入姓名">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>电话</label>
+                            <div class="field">
+                                <input type="text" th:value="${persons.getPhone()}" name="phone" placeholder="请输入电话">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>邮箱</label>
+                            <div class="field">
+                                <input type="email" th:value="${persons.getEmail()}" name="email" placeholder="请输入邮箱">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="three fields">
+                    <div class="field">
+                        <label>所属专业</label>
+                        <select name="major_id" id="major_id" class="ui dropdown search">
+                            <option value="">所属专业</option>
+                            <!--直接新建的时候-->
+                            <option th:if="${persons.getMajor_id()}==null"
+                                    th:each="majorOne:${listMajor}"
+                                    th:text="${majorOne.getName()}"
+                                    th:value="${majorOne.getId()}">
+                            </option>
+                            <!--新建重复的时候，或者是修改的时候-->
+                            <option th:if="${persons.getMajor_id()}!=null"
+                                    th:selected="${persons.getMajor_id()==majorOne.getId()}"
+                                    th:each="majorOne:${listMajor}"
+                                    th:text="${majorOne.getName()}"
+                                    th:value="${majorOne.getId()}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class=" field">
+                        <label >年级</label>
+                        <!--fluid撑满宽度 multiple可以多选标签 search可以搜索-->
+                        <div class="ui fluid  search selection action dropdown">
+                            <input type="hidden" name="grade" th:value="${persons.getGrade()}">
+                            <i class="icon dropdown"></i>
+                            <div class="default text">年级</div>
+                            <div class="menu">
+                                <div class="item" data-value="0">0</div>
+                                <div class="item" data-value="2017">2017</div>
+                                <div class="item" data-value="2018">2018</div>
+                                <div class="item" data-value="2019">2019</div>
+                                <div class="item" data-value="2020">2020</div>
+                                <div class="item" data-value="2021">2021</div>
+                                <div class="item" data-value="2022">2022</div>
+                                <div class="item" data-value="2023">2023</div>
+                                <div class="item" data-value="2020">2024</div>
+                                <div class="item" data-value="2021">2025</div>
+                                <div class="item" data-value="2022">2026</div>
+                                <div class="item" data-value="2023">2027</div>
+                                <div class="item" data-value="2020">2028</div>
+                                <div class="item" data-value="2021">2029</div>
+                                <div class="item" data-value="2022">2030</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>详细班级(部门单位)</label>
+                        <div class="field">
+                            <input type="text" th:value="${persons.getClassname()}" name="classname" placeholder="请输入班级">
+                        </div>
+                    </div>
+                </div>
+                <div class="three fields">
+
+                    <div class="field">
+                        <label>申请入党时间</label>
+                        <div class="field">
+                            <input type="date" th:value="${#dates.format(persons.getApplyjoinpartytime(),'yyyy-MM-dd')}" name="applyjoinpartytime" placeholder="请输入入党时间">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <th:block th:if="${#strings.equals(appearance,'positiveM')}">
+                            <label>转预时间(不可编辑)</label>
+                            <div class="field">
+                                <input type="date" readonly="readonly" th:value="${#dates.format(persons.getPreparejoinpartytime(),'yyyy-MM-dd')}" name="preparejoinpartytime" placeholder="请输入入党时间">
+                            </div>
+                        </th:block>
+                        <th:block th:if="${#strings.equals(appearance,'prepareM') || #strings.equals(appearance,'officialM') }">
+                            <label>转预时间</label>
+                            <div class="field">
+                                <input type="date" th:value="${#dates.format(persons.getPreparejoinpartytime(),'yyyy-MM-dd')}" name="preparejoinpartytime" placeholder="请输入入党时间">
+                            </div>
+                        </th:block>
+                    </div>
+
+                    <div class="field">
+                        <th:block th:if="${#strings.equals(appearance,'prepareM') || #strings.equals(appearance,'positiveM') }">
+                            <label>转正时间(不可编辑)</label>
+                            <div class="field">
+                                <input type="date" readonly="readonly" th:value="${#dates.format(persons.getJoinpartytime(),'yyyy-MM-dd')}" name="joinpartytime" placeholder="请输入入党时间">
+                            </div>
+                        </th:block>
+                        <th:block th:if="${#strings.equals(appearance,'officialM')}">
+                            <label>转正时间</label>
+                            <div class="field">
+                                <input type="date" th:value="${#dates.format(persons.getJoinpartytime(),'yyyy-MM-dd')}" name="joinpartytime" placeholder="请输入入党时间">
+                            </div>
+                        </th:block>
+                    </div>
+                </div>
+
+                <!--表单验证的错误信息展示-->
+                <div class="ui error message"></div>
+
+                <!--！！！！！！！！！！！！！！！！千万不能删除 用于前端的提示消息！！！！！！！！！！！！！！！！！！！！！！！！！！！-->
+                <!--表单验证提交了重复的分类名称 hasErrors('name')对应Persons类中的name验证
+                th:errors="*{name}"对应的是collegesController中的错误提示-->
+                <!--/*/
+                    <div class="ui negative message" th:if="${#fields.hasErrors('username')}">
+                        <i class="icon close"></i>
+                        <div class="header">验证失败:</div>
+                        <p th:errors="*{username}"></p>
+                    </div>
+                /*/-->
+                <!--！！！！！！！！！！！！！！！！千万不能删除 用于前端的提示消息！！！！！！！！！！！！！！！！！！！！！！！！！！！-->
+
+                <!--返回保存和发布按钮-->
+                <div class="ui right aligned container">
+                    <!--onclick事件返回上一个页面-->
+                    <button class="ui button" type="button" onclick="window.history.go(-1)">返回</button>
+                    <button class="ui teal button">提交</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!--底部footer-->
+<footer th:insert="collegeadmin/collegeadmin_fragment :: footer"></footer>
+
+
+<!--脚本-->
+<th:block th:insert="collegeadmin/collegeadmin_fragment :: script"></th:block>
+
+
+<!-- .是通过class获得按钮，当我们触发按钮的时候来取消或者添加相应的样式
+用于移动端展示目录的按钮，但是pc端没有-->
+<script>
+    $('.menu-button').click(function () {
+        $('.menu-control').toggleClass('m-mobile-hide');
+    });
+
+    // #是通过按钮id来弹出赞赏的二维码
+    //先通过按钮获得弹出 然后设置要弹出的内容 设置触发的条件以及弹窗的位置
+    $('#payButton').popup({
+        popup: $('.payCode.popup'),
+        on:'click',
+        position:'bottom center'
+    })
+
+    /*点击头像弹出注销的下拉框*/
+    $('.ui.dropdown')
+        .dropdown();
+
+    /*关闭消息提示框*/
+    $('.message .close')
+        .on('click', function() {
+            $(this)
+                .closest('.message')
+                .transition('fade')
+            ;
+        });
+
+    /*验证内容不能为空*/
+    $('.ui.form').form({
+        fields:{
+            /*这里往上都是固定的内容*/
+            /*title表示你要限定的元素的name属性*/
+            username:{
+                identifier:'username',
+                /*指定规则*/
+                rules:[{
+                    type:'empty',
+                    prompt:'用户名不能为空'
+                }]
+            },
+            originalpassword:{
+                identifier:'originalpassword',
+                /*指定规则*/
+                rules:[{
+                    type:'empty',
+                    prompt:'原始密码不能为空'
+                }]
+            },
+            name:{
+                identifier:'name',
+                /*指定规则*/
+                rules:[{
+                    type:'empty',
+                    prompt:'人员名字不能为空'
+                }]
+            },
+            phone:{
+                identifier:'phone',
+                /*指定规则*/
+                rules:[{
+                    type:'empty',
+                    prompt:'电话不能为空'
+                }]
+            },
+            major_id:{
+                identifier:'major_id',
+                /*指定规则*/
+                rules:[{
+                    type:'empty',
+                    prompt:'所属专业不能为空'
+                }]
+            },
+            grade:{
+                identifier:'grade',
+                /*指定规则*/
+                rules:[{
+                    type:'empty',
+                    prompt:'年级不能为空'
+                }]
+            },
+            classname:{
+                identifier:'classname',
+                /*指定规则*/
+                rules:[{
+                    type:'empty',
+                    prompt:'详细班级不能为空'
+                }]
+            },
+            applyjoinpartytime:{
+                identifier:'applyjoinpartytime',
+                /*指定规则*/
+                rules:[{
+                    type:'empty',
+                    prompt:'申请入党时间不能为空'
+                }]
+            }
+
+        }
+    });
+
+</script>
+</body>
+</html>

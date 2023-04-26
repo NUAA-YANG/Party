@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="collegeadmin/collegeadmin_fragment :: head(~{::title})">
+    <meta charset="UTF-8" >
+    <!--宽度等于屏幕的宽度 不缩放 便于在pc端和移动端查看  -->
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>三会一课</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <link rel="stylesheet" href="../../static/css/me.css">
+</head>
+<body>
+
+<!--导航 inverted表示黑白与否 attached圆角与否 segment形成一个分段-->
+<nav th:insert="collegeadmin/collegeadmin_fragment :: menu(8)"></nav>
+
+
+
+<!--中间内容-->
+<div class="m-padded-tb-big m-container-bigM">
+
+        <!--筛选数据-->
+        <div class="ui segment form" >
+            <!--后台传递的page-->
+            <input type="hidden" name="page">
+            <div class="inline fields">
+                <!--分类-->
+                <div class="field">
+                    <div class="ui labeled action input">
+                        <div class="ui state_select search selection dropdown">
+                            <input type="hidden" name="state">
+                            <i class="dropdown icon"></i>
+                            <div class="default text">信件状态</div>
+                            <div class="menu">
+                                <div class="item"  th:data-value="未读" th:text="未读">软件工程</div>
+                                <div class="item"  th:data-value="已读" th:text="已读">软件工程</div>
+                                <div class="item"  th:data-value="已回复" th:text="已回复">软件工程</div>
+                            </div>
+                        </div>
+                        <button id="clear-btnTwo" class="ui clear button">清除</button>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="ui labeled action input">
+                        <div class="ui qtype_select search selection dropdown">
+                            <input type="hidden" name="qtype">
+                            <i class="dropdown icon"></i>
+                            <div class="default text">信件类型</div>
+                            <div class="menu">
+                                <div class="item"  th:data-value="投诉" th:text="投诉">软件工程</div>
+                                <div class="item"  th:data-value="举报" th:text="举报">软件工程</div>
+                                <div class="item"  th:data-value="求助" th:text="求助">软件工程</div>
+                                <div class="item"  th:data-value="咨询" th:text="咨询">软件工程</div>
+                                <div class="item"  th:data-value="建议" th:text="建议">软件工程</div>
+                                <div class="item"  th:data-value="其他" th:text="其他">软件工程</div>
+                            </div>
+                        </div>
+                        <button id="clear-btn" class="ui clear button">清除</button>
+                    </div>
+                </div>
+
+                <!--按钮-->
+                <div class="field">
+                    <button type="button" id="search-btn" class="ui mini teal basic button">
+                        <i class="icon search"></i>搜索信件
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!--操作提示信息-->
+        <div class="ui success message" th:unless="${#strings.isEmpty(message)}">
+            <i class="icon close"></i>
+            <div class="header">提示:</div>
+            <p th:text="${message}"></p>
+        </div>
+
+        <div id="table-containerOne">
+            <!--列表-->
+            <table th:fragment="mailSearchList" class="ui celled table">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th><input type="checkbox"  onclick="cheAll()"></th>
+                    <th>标题</th>
+                    <th>类型</th>
+                    <th>书信内容</th>
+                    <th>写信时间</th>
+                    <th>状态</th>
+                    <th>回复内容</th>
+                    <th>回复时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="mailOne,iterStar:${page.content}" >
+                    <td th:text="${iterStar.count}">1</td>
+                    <td><input type="checkbox" name="ids" id="ids" th:value="${mailOne.getId()}"></td>
+                    <td th:text="${mailOne.getTitle()}" class="m-text-spacedSmall m-text-lined" >党课学习</td>
+                    <td th:text="${mailOne.getQtype()}">支部委员会</td>
+                    <td th:text="|${mailOne.getQuestion()}.....|" class="m-text-spacedSmall m-text-lined" >20</td>
+                    <td>[[${#dates.format(mailOne.getSpeaktime(),'yyyy-MM-dd')}]]</td>
+                    <!--这里的不同是为了个表格不同的颜色-->
+                    <th:block th:if="${mailOne.getState()}=='未读'">
+                        <td  th:text="${mailOne.getState()}" class="m-text-spacedSmall m-text-lined negative" >32栋205</td>
+                    </th:block>
+                    <th:block th:if="${mailOne.getState()}=='已读'">
+                        <td  th:text="${mailOne.getState()}" class="m-text-spacedSmall m-text-lined warning" >32栋205</td>
+                    </th:block>
+                    <th:block th:if="${mailOne.getState()}=='已回复'">
+                        <td  th:text="${mailOne.getState()}" class=" m-text-spacedSmall m-text-lined  positive" >32栋205</td>
+                    </th:block>
+                    <!--这里的不同是为了个表格不同的颜色-->
+                    <th:block th:if="${mailOne.getAnswer()}==null">
+                        <td  class="m-text-spacedSmall m-text-lined active"  ></td>
+                    </th:block>
+                    <th:block th:if="${mailOne.getAnswer()}!=null">
+                        <td th:text="|${mailOne.getAnswer()}....|" class="m-text-spacedSmall m-text-lined "  ></td>
+                    </th:block>
+
+                    <td th:classappend="${mailOne.getReplaytime()}==null ? 'active' : ''">[[${#dates.format(mailOne.getReplaytime(),'yyyy-MM-dd')}]]</td>
+
+                    <td>
+                        <a th:href="@{/admin/collegeAdmin/replayMail/{id}(id=${mailOne.getId()})}" class="ui mini teal  button">查看/回复</a>
+                        <a th:data-id="${mailOne.getId()}" class="ui mini red  button" onclick="deleteOne(this.getAttribute('data-id'))">删除</a>
+<!--                        <a th:href="@{/admin/collegeAdmin/deleteMail/{id}(id=${mailOne.getId()})}"  class="ui mini red  button" >删除</a>-->
+                    </td>
+                </tr>
+
+                </tbody>
+                <tfoot>
+                <tr>
+                    <!--colspan合并6列的单元格 -->
+                    <th colspan="10">
+                        <!--上一页和下一页-->
+                        <div class="ui  pagination mini menu" th:if="${page.totalPages}>1">
+
+                            <a onclick="pageJs(this)" th:attr="data-page=0" class="item" >首页</a>
+
+                            <!--data-page是自定义的数据 当我们点击的时候去处理上述input传递的page-->
+                            <a onclick="pageJs(this)" th:attr="data-page=${page.number}-1" class="item" th:if="${page.hasPrevious()}" ><i class="icon left chevron"></i>上一页</a>
+
+                            <div class="item">
+                                当前第 [[${page.number}+1]]页/共 [[${page.getTotalPages()}]] 页
+                            </div>
+
+                            <a onclick="pageJs(this)" th:attr="data-page=${page.number}+1" class="item" th:if="${page.hasNext()}" >下一页<i class="icon right chevron"></i></a>
+
+
+                            <a onclick="pageJs(this)" th:attr="data-page=${page.getTotalPages()}-1" class="item"  >尾页</a>
+
+                            <div class="item">
+                                共<p class=" ui header orange m-inline-block " th:text="${page.getTotalElements()}"></p>个
+                            </div>
+
+                        </div>
+
+                        <a onclick="deleteSome()" class="ui mini red  button right floated m-margin-tb-button">批量删除</a>
+                    </th>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+
+</div>
+
+
+<!--底部footer-->
+<footer th:insert="collegeadmin/collegeadmin_fragment :: footer"></footer>
+
+
+<!--脚本-->
+<th:block th:insert="collegeadmin/collegeadmin_fragment :: script"></th:block>
+
+
+
+<!-- .是通过class获得按钮，当我们触发按钮的时候来取消或者添加相应的样式
+用于移动端展示目录的按钮，但是pc端没有-->
+<script>
+    $('.menu-button').click(function () {
+        $('.menu-control').toggleClass('m-mobile-hide');
+    });
+
+    // #是通过按钮id来弹出赞赏的二维码
+    //先通过按钮获得弹出 然后设置要弹出的内容 设置触发的条件以及弹窗的位置
+    $('#payButton').popup({
+        popup: $('.payCode.popup'),
+        on:'click',
+        position:'bottom center'
+    })
+
+    /*点击头像弹出注销的下拉框*/
+    $('.ui.dropdown')
+        .dropdown();
+
+    /*点击清除分类选择*/
+    $('#clear-btn')
+        .on('click', function() {
+            $('.ui.qtype_select.dropdown')
+                .dropdown('clear')
+            ;
+        });
+
+    $('#clear-btnTwo')
+        .on('click', function() {
+            $('.ui.state_select.dropdown')
+                .dropdown('clear')
+            ;
+        });
+
+    /*关闭消息提示框*/
+    $('.message .close')
+        .on('click', function() {
+            $(this)
+                .closest('.message')
+                .transition('fade')
+            ;
+        });
+
+
+
+    /*单个删除*/
+    function deleteOne(id) {
+        var mailId =id;
+        var t = confirm("您确认要删除选中的内容吗？");
+        if (t==false){
+            return false;
+        }else {
+            window.location.replace("/admin/collegeAdmin/deleteMail/"+mailId);
+        }
+    }
+
+    /*全选或者取消全选*/
+    var isCheckAll = false;
+    function cheAll(){
+        $("input[type='checkbox']").each(function() {
+            this.checked = !isCheckAll;
+        });
+        isCheckAll = !isCheckAll;
+    }
+
+    /*批量删除传递id*/
+    function deleteSome(){
+        var Checkbox = false;
+        $("input[name='ids']").each(function() {
+            if (this.checked == true) {
+                Checkbox = true;
+            }
+        });
+        if (Checkbox) {
+            var t = confirm("您确认要删除选中的内容吗？");
+            if (t == false) {
+                return false;
+            } else {
+                var checkedID="";
+                $("input[name='ids']").each(function() {
+                    if (this.checked == true) {
+                        checkedID += this.value + ",";
+                    }
+                });
+                window.location.replace("/admin/collegeAdmin/deleteSomeMail/"+checkedID);
+            }
+        } else {
+            alert("请选择您要删除的内容!");
+            return false;
+        }
+    }
+
+
+
+    /*翻页的时候修改page数值*/
+    /*这里的page对应的是js方法*/
+    function pageJs(obj) {
+        /*这里的name=page是我们自定义的input中的隐含阈
+        * date('page')是获取了翻页中我们自定义的data-page的值
+        * 说白了就是点击按钮的时候给我们的隐含阈赋值为data-page*/
+        $("[name='page']").val($(obj).data("page"));
+        loaddata();
+    }
+
+    /*按钮点击提交调用方法*/
+    $('#search-btn').click(function () {
+        /*点击搜索的时候把page清0，保证从第一页开始*/
+        $("[name='page']").val(0);
+        loaddata();
+    });
+
+    /*Ajax请求来提交搜索信息*/
+    function loaddata() {
+        $("#table-containerOne").load(/*[[@{/admin/collegeAdmin/mailShow/search}]]*/"/admin/collegeAdmin/mailShow/search",{
+            state :$("[name='state']").val(),
+            qtype :$("[name='qtype']").val(),
+            page:$("[name='page']").val()
+        });
+    }
+
+
+</script>
+</body>
+</html>

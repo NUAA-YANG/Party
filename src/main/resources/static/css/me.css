@@ -1,0 +1,355 @@
+/*自定义的css样式 ！important是为了覆盖原来的样式
+em是单位 一个em表示14px
+*/
+
+
+/*=============================文件上传按钮===================================*/
+/*隐藏原input*/
+.upload-btn {
+    display: none;
+}
+/*美化自定义按钮*/
+.file-input-trigger {
+    padding: 2px 5px;
+    border-radius: 5px;
+    border: 1px solid #3888C7;
+    background-color: #3888C7;
+    outline: none;
+    color: #fff;
+    cursor: pointer;
+}
+
+/*===============================设置距离====================================*/
+/*margin是外边距*/
+.m-margin-tb-tine {
+    margin-top: 0.3em !important;
+    margin-bottom: 0.3em !important;
+}
+
+.m-margin-tb-mtine {
+    margin-top: 0.6em !important;
+    margin-bottom: 0.6em !important;
+}
+
+.m-margin-tb-middle {
+    margin-top: 0.6em !important;
+    margin-bottom: 0.7em !important;
+}
+
+.m-margin-tb-middle {
+    margin-top: 2em !important;
+    margin-bottom: 2em !important;
+}
+
+.m-margin-tb-big {
+    margin-top: 3.5em !important;
+    margin-bottom: 3.5em !important;
+}
+
+.m-margin-tb-massive {
+    margin-top: 5em !important;
+    margin-bottom: 5em !important;
+}
+
+/*手机端的提交评论提交信息距离*/
+.m-margin-bottom-tine{
+    margin-bottom: 0.5em !important;
+}
+
+.m-margin-tb-card {
+    margin-left: 2em !important;
+    margin-right: 2em !important;
+}
+
+.m-margin-tb-button {
+    margin-left: 2em !important;
+}
+
+.m-margin-font {
+    margin-top: 2em !important;
+}
+
+
+/*这里是设置的文章的左右边距*/
+.m-padded-lr-responsive{
+    padding-left:4em !important;
+    padding-right:4em !important;
+}
+
+.m-padded-lr-responsiveSmall{
+    padding-left:2em !important;
+    padding-right:2em !important;
+}
+
+
+.m-padded-lr-question{
+    padding-left:10em !important;
+}
+
+.m-padded-lr-time{
+    padding-left:4em !important;
+    padding-right:4em !important;
+}
+
+
+.m-padded-lr-card-Small{
+    padding-top:2em !important;
+    padding-left:2em !important;
+    padding-right:2em !important;
+    padding-bottom:2em !important;
+}
+
+
+.m-padded-lr-card{
+    padding-left:5em !important;
+    padding-right:5em !important;
+}
+
+
+.m-padded-t-title{
+    padding-top:1.5em !important;
+}
+
+
+/*padding是内边距*/
+.m-padded-mini{
+    padding:0.3em !important;
+    padding-top:0.2em !important;
+}
+
+
+/*用于博客详情页面的导航菜单位置*/
+.m-padded-tine{
+    /*padding: 5em !important;*/
+    padding-right: 2.5em !important;
+    padding-bottom: 18em !important;
+    /*padding-top:5em !important;*/
+}
+
+/*设置头部间隔距离 用在了index的用户头像时间那里*/
+.m-padded-top{
+    padding-top:1.5em !important;
+}
+
+/*设置头部间隔距离 用在了index的用户头像时间那里*/
+.m-padded-top-middle{
+    padding-top:5em !important;
+}
+
+
+/*设置头部间隔距离 用在了index的用户头像时间那里*/
+.m-padded-top-big{
+    padding-top:7em !important;
+}
+
+
+/*这里是设置的index页面顶部的宽度和距离*/
+.m-padded-tb-mini{
+    padding-top:0.2em !important;
+    padding-bottom: 0.2em !important;
+}
+
+.m-padded-tb-miniMore{
+    padding-top:1.7em !important;
+    padding-bottom: 0.8em !important;
+}
+
+/*这里是设置的index页面中间部分的宽度和距离*/
+.m-padded-tb-tine {
+    padding-top: 1.9em !important;
+    padding-bottom: 1.5em !important;
+}
+
+/*这里是设置的index页面中间部分的宽度和距离*/
+.m-padded-tb-middle {
+    padding-top: 2em !important;
+    padding-bottom: 2em !important;
+}
+
+/*这里是设置的index页面中间部分的宽度和距离*/
+.m-padded-tb-big {
+    padding-top: 3.5em !important;
+    padding-bottom: 3.5em !important;
+}
+
+/*这里是设置的index页面底部的宽度和距离*/
+.m-padded-tb-massive {
+    padding-top: 5em !important;
+    padding-bottom: 5em !important;
+}
+
+/*==================================位置===================================*/
+/*设置主页按钮的位置*/
+.m-top-right{
+    position: absolute !important;
+    top: 0;
+    right: 0;
+}
+
+
+/*===================================字体====================================*/
+
+/*字体颜色*/
+.m-text-color{
+    color: #797373;
+}
+
+.m-text {
+    font-weight: 300 !important;
+    letter-spacing: 1px !important;
+    line-height: 1.8;
+}
+
+/*链接的字体样式*/
+.m-text-a {
+    font-weight: 400 !important;
+    letter-spacing: 1px !important;
+    line-height: 1.8;
+}
+
+.m-text-task {
+    font-weight: 300 !important;
+    letter-spacing: 1.7px !important;
+    line-height: 1.8;
+}
+
+/*字体大小*/
+.m-text-size {
+    font-size: 34px !important;
+}
+
+/*字体粗细*/
+.m-text-thin {
+    font-weight: 300 !important;
+}
+/*字体的间隔*/
+.m-text-spaced {
+    letter-spacing: 1px !important;
+}
+
+/*字体的间隔*/
+.m-text-spacedSmall {
+    letter-spacing: 0.7px !important;
+}
+/*字体的行间距*/
+.m-text-lined {
+    line-height: 1.8;
+}
+/*字体的透明度*/
+.m-opacity-mini {
+    opacity: 0.8 !important;
+}
+
+/*字体的透明度*/
+.m-opacity-middle {
+    opacity: 0.6 !important;
+}
+
+/*字体的透明度*/
+.m-opacity-small {
+    opacity: 0.4 !important;
+}
+
+
+/*=========================自定义显示的属性=============================*/
+
+/*标签不换行*/
+.m-inline-block {
+    display: inline-block !important;
+}
+
+/*容器的宽度*/
+.m-container {
+    max-width: 72em !important;
+    margin: auto !important;
+}
+
+.m-container-small {
+    max-width: 60em !important;
+    margin: auto !important;
+}
+
+.m-container-middle {
+    max-width: 70em !important;
+    margin: auto !important;
+}
+
+.m-container-big {
+    max-width: 80em !important;
+    margin: auto !important;
+}
+
+.m-container-bigger {
+    max-width: 85em !important;
+    margin: auto !important;
+}
+
+.m-container-bigM {
+    max-width: 89em !important;
+    margin: auto !important;
+}
+
+.m-container-max {
+    max-width: 93em !important;
+    margin: auto !important;
+}
+
+
+
+/*==========================手机端或者pc端样式变化===============================*/
+/*pc端不会展示按钮*/
+.m-mobile-show{
+    display: none !important;
+}
+
+/*屏幕的宽度小于768时会生效 用于折叠index的目录*/
+@media screen and (max-width: 1068px){
+    .m-mobile-hide{
+        display: none !important    ;
+    }
+    /*手机端展示按钮*/
+    .m-mobile-show{
+        display: block !important;
+    }
+    .m-padded-lr-responsive{
+        padding-left: 0.1em !important;
+        padding-right: 0.1em !important;
+    }
+    .m-mobile-wide{
+        width: 100% !important;
+    }
+}
+
+/*========================背景图片=================================*/
+body{
+    background: url("../images/BackImg.jpg");
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+
+/*=================布局======================================*/
+/*博客详情界面导航条绝对位置为最高级 即永远在最上面 不会改变*/
+.m-fixed{
+    position: fixed !important;
+    z-index: 1 !important;
+}
+/*博客详情界面导航条的具体位置*/
+.m-right-bottom{
+    bottom: 0 !important;
+    right: 0 !important;
+}
+
+
+
+/*====================导航阴影==============================*/
+.m-shadow-small{
+    -webkit-box-shadow:0 4px 8px rgba(0,0,0,0.2) !important ;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
+}
+
+
+
+
+

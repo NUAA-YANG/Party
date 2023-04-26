@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="collegeadmin/collegeadmin_fragment :: head(~{::title})">
+    <meta charset="UTF-8" >
+    <!--宽度等于屏幕的宽度 不缩放 便于在pc端和移动端查看  -->
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>人员管理</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <link rel="stylesheet" href="../../static/css/me.css">
+</head>
+<body>
+
+<!--导航 inverted表示黑白与否 attached圆角与否 segment形成一个分段-->
+<nav th:insert="collegeadmin/collegeadmin_fragment :: menu(4)"></nav>
+
+
+<br><br><br><br><br>
+<!--中间内容-->
+<div class="m-padded-tb-big m-container-small">
+    <div class="ui container">
+        <th:block th:if="${#strings.equals(appearance,'positiveM')}">
+            <h3 class="ui dividing header">设置转预时间</h3>
+        </th:block>
+        <th:block th:if="${#strings.equals(appearance,'prepareM')}">
+            <h3 class="ui dividing header">设置转正时间</h3>
+        </th:block>
+        <div class="ui segment">
+            <form class="ui form" method="post" th:action="@{/admin/collegeAdmin/updateAppearance/{id}(id=${persons.getId()})}">
+                <div class="field">
+                    <div class="field" >
+                        <label>时间</label>
+                        <div class="field">
+                            <input type="date"  name="updatetime" placeholder="请输入用户名">
+                        </div>
+                    </div>
+                </div>
+
+                <!--表单验证的错误信息展示-->
+                <div class="ui error message"></div>
+
+                <!--返回保存和发布按钮-->
+                <div class="ui right aligned container">
+                    <!--onclick事件返回上一个页面-->
+                    <button class="ui button" type="button" onclick="window.history.go(-1)">返回</button>
+                    <button class="ui teal button">提交</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<br><br><br><br><br>
+
+<!--底部footer-->
+<footer th:insert="collegeadmin/collegeadmin_fragment :: footer"></footer>
+
+
+<!--脚本-->
+<th:block th:insert="collegeadmin/collegeadmin_fragment :: script"></th:block>
+
+
+<!-- .是通过class获得按钮，当我们触发按钮的时候来取消或者添加相应的样式
+用于移动端展示目录的按钮，但是pc端没有-->
+<script>
+    $('.menu-button').click(function () {
+        $('.menu-control').toggleClass('m-mobile-hide');
+    });
+
+
+    /*点击头像弹出注销的下拉框*/
+    $('.ui.dropdown')
+        .dropdown();
+
+    /*关闭消息提示框*/
+    $('.message .close')
+        .on('click', function() {
+            $(this)
+                .closest('.message')
+                .transition('fade')
+            ;
+        });
+
+    /*验证内容不能为空*/
+    $('.ui.form').form({
+        fields:{
+            /*这里往上都是固定的内容*/
+            /*title表示你要限定的元素的name属性*/
+            updatetime:{
+                identifier:'updatetime',
+                /*指定规则*/
+                rules:[{
+                    type:'empty',
+                    prompt:'时间不能为空'
+                }]
+            }
+
+        }
+    });
+
+</script>
+</body>
+</html>

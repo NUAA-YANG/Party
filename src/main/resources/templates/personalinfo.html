@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="c_fragment :: head(~{::title})">
+    <meta charset="UTF-8" >
+    <!--宽度等于屏幕的宽度 不缩放 便于在pc端和移动端查看  -->
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>个人信息</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <link rel="stylesheet" href="../../static/css/me.css">
+</head>
+<body>
+
+<!--导航 inverted表示黑白与否 attached圆角与否 segment形成一个分段-->
+<nav th:insert="c_fragment :: menu(3)"></nav>
+
+<!--二级导航模块-->
+<div th:insert="c_fragment :: menuOne(1)"></div>
+
+<!--中间内容-->
+<div class="m-padded-tb-big m-container-middle">
+    <div class="ui container">
+
+        <!--操作提示信息-->
+        <div class="ui success message" th:unless="${#strings.isEmpty(message)}">
+            <i class="icon close"></i>
+            <div class="header">提示:</div>
+            <p th:text="${message}"></p>
+        </div>
+
+        <div class="ui grid stackable">
+            <div class="six wide column stackable">
+                <div class="ui card">
+                    <a class="image" href="#">
+                        <img th:src="@{/images/Headimage.png}"
+                             title="" style="">
+                    </a>
+                    <div class="content">
+                        <div class="header" >[[${loginPerson.getName()}]]</div>
+                        <div class="meta">
+                            <span class="text">[[${appearance}]]</span>
+                        </div>
+                        <div class="description">
+                            一心向党，全心全意为人民服务
+                        </div>
+                    </div>
+                    <div class="extra content">
+                        <a th:href="@{/personShow/personalInfoInput/{id}(id=${loginPerson.getId()})}" class="ui  fluid teal  button">
+                            <i class="edit outline icon"></i>修改个人信息
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="ten wide column stackable">
+                <!--个人信息展示-->
+                <table class="ui red celled striped table">
+                    <thead>
+                    <tr><th colspan="6">
+                        个人信息
+                    </th>
+                    </tr></thead>
+                    <tbody>
+                    <tr>
+                        <td class="collapsing"><i class="id badge outline icon"></i> 用户名</td>
+                        <td class="collapsing"  th:text="${loginPerson.getUsername()}">张三</td>
+                        <td class="collapsing"><i class="barcode icon"></i> 密码</td>
+                        <td class="collapsing" >已加密</td>
+                    </tr>
+                    <tr>
+                        <td><i class="address book icon"></i> 姓名</td>
+                        <td th:text="${loginPerson.getName()}">真实姓名</td>
+                        <td class="collapsing"><i class="sitemap icon"></i> 所属学院</td>
+                        <td th:text="${collegeName}">123456@133.com</td>
+                    </tr>
+                    <tr>
+                        <td class="collapsing"><i class="sitemap icon"></i> 专业名称</td>
+                        <td class="collapsing" th:text="${majorName}">123456@133.com</td>
+                        <td class="collapsing"><i class="sitemap icon"></i> 详细班级</td>
+                        <td class="collapsing" th:text="${loginPerson.getClassname()}">123456@133.com</td>
+                    </tr>
+                    <tr>
+                        <td><i class="mobile alternate icon"></i> 电话</td>
+                        <td th:text="${loginPerson.getPhone()}">123456</td>
+                        <td><i class="envelope outline icon"></i> 邮箱</td>
+                        <td th:text="${loginPerson.getEmail()}">123456@133.com</td>
+                    </tr>
+                    <tr>
+                        <th:block th:if="${loginPerson.getApplyjoinpartytime()}!=null">
+                            <td colspan="2"><i class="calendar alternate outline icon"></i> 申请入党时间</td>
+                            <td colspan="2" th:text="${#dates.format(loginPerson.getApplyjoinpartytime(),'yyyy-MM-dd')}">2022-1-20</td>
+                        </th:block>
+                    </tr>
+                    <tr>
+                        <th:block th:if="${loginPerson.getPreparejoinpartytime()}!=null">
+                            <td colspan="2"><i class="calendar alternate outline icon"></i> 转预时间</td>
+                            <td colspan="2" th:text="${#dates.format(loginPerson.getPreparejoinpartytime(),'yyyy-MM-dd')}">2022-1-20</td>
+                        </th:block>
+                    </tr>
+                    <tr>
+                        <th:block th:if="${loginPerson.getJoinpartytime()}!=null">
+                            <td colspan="2"><i class="calendar alternate outline icon"></i> 转正时间</td>
+                            <td colspan="2" th:text="${#dates.format(loginPerson.getJoinpartytime(),'yyyy-MM-dd')}">2022-1-20</td>
+                        </th:block>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <!--交党费-->
+                <div class=" ui  fluid center aligned basic">
+                    <button id="payButton" class="ui  fluid orange circular button">交党费</button>
+                </div>
+
+                <!--点击交党费的按钮才会出现图片-->
+                <div class="ui payCode flowing popup  transition hidden">
+                    <div class="ui orange basic label">
+                        <!--inherit继承上一级的字体样式-->
+                        <div class="ui small images" style="font-size: inherit !important;">
+                            <div class="image">
+                                <img src="../static/images/QQCode.png" th:src="@{/images/ZhiFuBao.jpg}" alt="" class="ui  rounded bordered image" >
+                                <div class="ui center aligned">支付宝</div>
+                            </div>
+                            <div class="image">
+                                <img src="../static/images/WeiXin.jpg" th:src="@{/images/WeiXin.jpg}" alt="" class="ui  rounded bordered image" >
+                                <div class="ui center aligned">微信</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--底部footer-->
+<footer th:insert="c_fragment :: footer"></footer>
+
+
+<th:block th:insert="c_fragment::script"></th:block>
+
+
+
+<!-- .是通过class获得按钮，当我们触发按钮的时候来取消或者添加相应的样式
+用于移动端展示目录的按钮，但是pc端没有-->
+<script>
+    $('.menu-button').click(function () {
+        $('.menu-control').toggleClass('m-mobile-hide');
+    });
+
+
+    /*点击头像弹出注销的下拉框*/
+    $('.ui.dropdown')
+        .dropdown();
+
+    // #是通过按钮id来弹出交党费的二维码
+    //先通过按钮获得弹出 然后设置要弹出的内容 设置触发的条件以及弹窗的位置
+    $('#payButton').popup({
+        popup: $('.payCode.popup'),
+        on:'click',
+        position:'bottom center'
+    })
+
+    /*关闭消息提示框*/
+    $('.message .close')
+        .on('click', function() {
+            $(this)
+                .closest('.message')
+                .transition('fade')
+            ;
+        });
+
+
+
+</script>
+</body>
+</html>

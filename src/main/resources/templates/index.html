@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="c_fragment :: head(~{::title})">
+    <meta charset="UTF-8">
+    <!--宽度等于屏幕的宽度 不缩放 便于在pc端和移动端查看  -->
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>首页</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <link rel="stylesheet" href="../static/css/me.css">
+</head>
+<body>
+
+<!--导航 inverted表示黑白与否 attached圆角与否 segment形成一个分段-->
+<nav th:insert="c_fragment :: menu(1)"></nav>
+
+<!--中间内容-->
+<div class="m-padded-tb-big m-container-bigger">
+        <!--响应式布局-->
+        <div class=" ui container stackable ">
+            <!--切分左右两边的模块-->
+            <div class="ui grid stackable">
+
+                <!--中间博客页面-->
+                <div class="eleven wide column stackable">
+
+                    <!--分成两列 展示头部的标题信息 attached表示连接模块-->
+                    <div class="ui segment top attached">
+                        <div class="ui middle  aligned two column grid">
+                            <div class="ui column">
+                                <h3 class="ui red header">新闻公告</h3>
+                            </div>
+                            <div class="ui column right aligned">
+                                共<h2 class="ui header orange m-inline-block" th:text="${page.totalElements}">14</h2>篇
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--中间的文章模块 -->
+                    <div class="ui  attached segment stackable">
+                        <!--padded 文章内容不要和边框间距那么大 vertical不同的问模块之间会有切割线-->
+
+                        <div class="ui vertical padded segment m-padded-tb-tine" th:each="newsOne:${page.content}">
+                            <!--mobile reversed  stackable手机端可响应-->
+                            <div class="ui grid mobile reversed  stackable">
+                                <!--文章展示-->
+                                <div class="ui eleven wide column">
+                                    <h3 class="ui header"><a th:href="@{/personShow/new/{id}(id=${newsOne.getId()})}" th:text="${newsOne.getTitle()}" target="_blank" style="color: black">2022新春祝福</a></h3>
+                                    <a class="m-text" th:href="@{/personShow/new/{id}(id=${newsOne.getId()})}" th:text="|${newsOne.getIntroduce()}....|" target="_blank" style="color: black">回首这一年，意义非凡。我们亲历了党和国家历史上具有里程碑意义的大事。“两个一百年”奋斗目标历史交汇，我们开启了全面建设社会主义现代化国家新征程，正昂首阔步行进在实现中华民族伟大复兴的道路上……</a>
+
+                                    <!--文章下面的小模块 展示时间等信息-->
+                                    <div class="ui grid m-padded-top">
+                                        <div class="nine wide column">
+                                            <!--默认纵向切割 horizontal表示横向-->
+                                            <div class="ui mini link list horizontal">
+                                                <!-- item用于一个模块 avatar表示圆角图像 常用于头像-->
+                                                <div class="item">
+                                                    <img src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fc-ssl.duitang.com%2Fuploads%2Fitem%2F202004%2F22%2F20200422115716_mvgco.jpg&refer=http%3A%2F%2Fc-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1641542691&t=bf60fc89ecc8c8026c4f7478859cdad6"
+                                                         alt="" class="ui avatar image">
+                                                    <div class="content">
+                                                        <!--header 用于文字加粗-->
+                                                        <div class="header m-text-thin">
+                                                            yzx
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="item">
+                                                    <i class="icon calendar alternate outline"></i> [[${#dates.format(newsOne.getUpdatetime(),'yyyy-MM-dd')}]]
+                                                </div>
+                                                <div class="item">
+                                                    <i class="icon eye"></i> [[${newsOne.getViews()}]]
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class=" right aligned seven wide column">
+                                            <th:block th:each="collegeOne:${listColleges}">
+                                                <th:block th:if="${newsOne.getCollege_id()==collegeOne.getId()}">
+                                                    <div  class="ui label teal basic m-padded-mini m-text-thin" th:text="${collegeOne.getName()}">
+                                                        认知升级
+                                                    </div>
+                                                </th:block>
+                                            </th:block>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <th:block th:if="${newsOne.getIndexpicture()}!=''">
+                                    <!--图片展示-->
+                                    <div class="ui five wide column">
+                                        <a th:href="@{/personShow/new/{id}(id=${newsOne.getId()})}" target="_blank">
+                                            <img src="https://boot-img.xuexi.cn/image/1004/process/bdcadd7b47d340c59ec66e45ed53b711.jpg"
+                                                 alt="图片有误" class="ui rounded image" th:src="@{${newsOne.getIndexpicture()}}">
+                                        </a>
+                                    </div>
+                                </th:block>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!--尾部的模块-->
+                    <div class="ui segment attached bottom">
+                        <div class="ui grid" th:if="${page.getTotalPages()}>1">
+
+                            <div class="ui three wide column" >
+                                <a th:href="@{/personShow/index(page=0)}" class="ui teal basic button" >首页</a>
+                            </div>
+
+                            <div class="ui three wide column" th:if="${page.hasPrevious()}">
+                                <!--teal选定颜色 basic不要填充颜色-->
+                                <a th:href="@{/personShow/index(page=${page.number}-1)}" class="ui teal basic button">上一页</a>
+                            </div>
+
+                            <div class="ui three wide column" th:if="!${page.hasPrevious()}">
+                                <!--teal选定颜色 basic不要填充颜色-->
+                                <a  class="ui teal basic button">上一页</a>
+                            </div>
+
+                            <div class="ui four wide column middle aligned">
+                                当前第 [[${page.number}+1]]页/共 [[${page.getTotalPages()}]] 页
+                            </div>
+
+                            <div class="ui three wide column" th:if="${page.hasNext()}">
+                                <a th:href="@{/personShow/index(page=${page.number}+1)}" class="ui teal basic button">下一页</a>
+                            </div>
+
+                            <div class="ui three wide column" th:if="!${page.hasNext()}">
+                                <a  class="ui teal basic button">下一页</a>
+                            </div>
+
+                            <div class="ui three wide column right aligned " >
+                                <a th:href="@{/personShow/index(page=${page.getTotalPages()}-1)}" class="ui teal basic button" >尾页</a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!--右边的卡片模块-->
+                <div class="five wide column stackable">
+
+                    <!--最新推荐-->
+                    <div class="ui segments m-margin-tb-middle">
+                        <div class="ui secondary segment">
+                            <div class="ui two column grid">
+                                <div class="column">
+                                    <i class="icon bookmark"></i>阅读热榜
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ui teal segment">
+                            <div class="ui fluid vertical menu" th:each="newsTwo:${viewsList}">
+                                <a href="#" th:href="@{/personShow/new/{id}(id=${newsTwo.getId()})}" target="_blank" class="m-text-color m-text-a item" th:text="${newsTwo.getTitle()}">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ui segments m-margin-tb-middle">
+                        <div class="ui secondary segment">
+                            <div class="ui two column grid">
+                                <div class="column">
+                                    <i class="icon bookmark"></i>评论最多
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ui teal segment">
+                            <div class="ui fluid vertical menu" th:each="newsTwo:${commentsList}">
+                                <a href="#" th:href="@{/personShow/new/{id}(id=${newsTwo.getId()})}" target="_blank" class="m-text-color m-text-a item" th:text="${newsTwo.getTitle()}">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--二维码-->
+                    <h4 class="ui horizontal divider header m-margin-tb-middle">扫码关注支部</h4>
+                    <div class="ui centered card" style="width: 11em">
+                        <img src="../static/images/QQCode.png" th:src="@{/images/QQCode.png}" alt="" class="ui image round" >
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<!--底部footer-->
+<footer th:insert="c_fragment :: footer"></footer>
+
+
+<th:block th:insert="c_fragment::script"></th:block>
+
+
+
+    <!--通过class获得按钮，当我们触发按钮的时候来取消或者添加相应的样式-->
+<script>
+    $('.menu-button').click(function () {
+        $('.menu-control').toggleClass('m-mobile-hide');
+    });
+
+    /*点击头像弹出注销的下拉框*/
+    $('.ui.dropdown')
+        .dropdown();
+
+</script>
+
+
+</body>
+</html>

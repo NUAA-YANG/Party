@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="c_fragment :: head(~{::title})">
+    <meta charset="UTF-8">
+    <!--宽度等于屏幕的宽度 不缩放 便于在pc端和移动端查看  -->
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>会议详情</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <!--导入排版的typo插件依赖-->
+    <link rel="stylesheet" href="../static/css/typo.css">
+    <!--这是代码高亮的prism的插件依赖-->
+    <link rel="stylesheet" href="../static/lib/prism/prism.css">
+    <!--这是自定义的css-->
+    <link rel="stylesheet" href="../static/css/me.css">
+</head>
+<body>
+
+<!--导航 inverted表示黑白与否 attached圆角与否 segment形成一个分段-->
+<nav th:insert="c_fragment :: menu(4)"></nav>
+
+
+
+<!--中间内容-->
+<div class="m-padded-tb-big m-container-small stackable">
+    <div class="ui container stackable" >
+
+        <!--展示时间信息-->
+        <div class="ui segment top attached stackable">
+            <!-- item用于一个模块 avatar表示圆角图像 常用于头像-->
+            <div class="item">
+
+                    <div class="ui grid">
+                        <div class="ui three wide column">
+                            <h3 class=" right aligned " th:text="${formatMeeting.getMtype()}" style="color: red">
+                                支部委员大会
+                            </h3>
+                        </div>
+                        <div class="ui three wide column left aligned">
+
+                            <th:block th:if="(${#dates.format(new java.util.Date().getTime(), 'yyyy-MM-dd HH:mm')}>=${#dates.format(formatMeeting.getStarttime(),'yyyy-MM-dd HH:mm')}) ">
+                                <th:block th:if="(${#dates.format(new java.util.Date().getTime(), 'yyyy-MM-dd HH:mm')}<=${#dates.format(formatMeeting.getEndtime(),'yyyy-MM-dd HH:mm')})">
+                                    <button  class="mini ui  teal basic  button">
+                                        正在进行中
+                                    </button>
+                                </th:block>
+                            </th:block>
+                            <th:block th:if="(${#dates.format(new java.util.Date().getTime(), 'yyyy-MM-dd HH:mm')}<${#dates.format(formatMeeting.getStarttime(),'yyyy-MM-dd HH:mm')}) ">
+                                <button  class="mini ui  grey basic  button">
+                                    未开始
+                                </button>
+                            </th:block>
+                            <th:block th:if="(${#dates.format(new java.util.Date().getTime(), 'yyyy-MM-dd HH:mm')}>${#dates.format(formatMeeting.getEndtime(),'yyyy-MM-dd HH:mm')})">
+                                <button  class="mini ui  red basic  button">
+                                    已结束
+                                </button>
+                            </th:block>
+                        </div>
+                    </div>
+            </div>
+            <div class="ui grid">
+                <div class="four wide column m-padded-lr-time">
+                    <div class="ui link list horizontal">
+                        <div class="item">
+                            <div class="ui column">
+                                <h1 class="ui inverted header m-text-size" th:text="${#dates.format(formatMeeting.getStarttime(),'HH:mm')}">14:00</h1>
+                                <!--默认纵向切割-->
+                                <div class="ui inverted link list">
+                                    <nav  class="item" style="color:#000;" th:text="${#dates.format(formatMeeting.getStarttime(),'yyyy-MM-dd')}">2021/2/7</nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="eight wide left aligned column m-padded-lr-time">
+                    <div class="ui link list horizontal">
+                        <div class="item">
+                            <div class="ui column">
+                                <!--默认纵向切割-->
+                                <div class="ui inverted link list">
+                                    <i class="big icon long arrow alternate right"></i>
+                                    <i class="big icon long arrow alternate right"></i>
+                                    <i class="big icon long arrow alternate right"></i>
+                                    <i class="big icon long arrow alternate right"></i>
+                                    <i class="big icon long arrow alternate right"></i>
+                                    <i class="big icon long arrow alternate right"></i>
+                                    <i class="big icon long arrow alternate right"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="four wide column right aligned m-padded-lr-time">
+                    <div class="ui link list horizontal">
+                        <div class="item">
+                            <div class="ui column">
+                                <h1 class="ui inverted header m-text-size" th:text="${#dates.format(formatMeeting.getEndtime(),'HH:mm')}">16:00</h1>
+                                <!--默认纵向切割-->
+                                <div class="ui inverted link list">
+                                    <nav  class="item" style="color:#000;" th:text="${#dates.format(formatMeeting.getEndtime(),'yyyy-MM-dd')}">2021/2/7</nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--分割条-->
+        <div class="ui  tertiary segment attached stackable"></div>
+
+        <!--发起人和地点信息-->
+        <div class="ui segment attached stackable">
+            <div class="ui two column very relaxed grid">
+                <div class="column center aligned">
+                    <div class="ui ">
+                        <th:block th:each="adminTwo:${adminList}">
+                            <th:block th:if="${adminTwo.getId()==formatMeeting.getAdmin_id()}">
+                                <h3 class="ui  header ">
+                                    <block class="m-opacity-small">会议发起人：</block> [[${adminTwo.getName()}]]
+                                </h3>
+                            </th:block>
+                        </th:block>
+                    </div>
+                </div>
+                <div class="column center aligned">
+                    <div class="ui  ">
+                        <h3 class="ui  header " ><block class="m-opacity-small">会议地址：</block> [[${formatMeeting.getAddress()}]]</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="ui vertical divider">
+                and
+            </div>
+        </div>
+
+        <!--文章内容区域-->
+        <div class="ui segment attached padded stackable">
+            <!--basic也可以用作没有框线-->
+
+            <h2 class="ui header center aligned m-padded-t-title" th:text="${formatMeeting.getTitle()}">推免研究生</h2>
+
+            <!--中间的主要内容-->
+            <div id="content" th:utext="${formatMeeting.getContent()}" class="typo typo-selection m-padded-lr-responsiveSmall m-padded-tb-big">
+
+            </div>
+        </div>
+
+
+        <!--留言区域-->
+        <div  class="ui bottom attached segment">
+            <!--利用请求只会刷新评论的展示区域-->
+            <div id="comment-container" class="ui red segment">
+                <!--用于后端的刷新回到列表这个位置-->
+                <div th:fragment="statementListShow">
+                    <div class="ui small comments" style="max-width: 100%">
+                        <h3 class="ui dividing header" >会议发言</h3>
+                        <th:block th:if="${#arrays.length(listStatements)}!=0">
+                            <div class="comment" th:each="statementOne:${listStatements}">
+                                <a class="avatar">
+                                    <img src="https://ss1.baidu.com/-4o3dSag_xI4khGko9WTAnF6hhy/baike/w%3D268/sign=a4eddf8c013b5bb5bed727f80ed2d523/adaf2edda3cc7cd901c9eafe3b01213fb80e9135.jpg"
+                                         alt="" class="ui avatar image" >
+                                </a>
+                                <div class="content">
+                                    <a class="author">
+                                        <span  th:text="${statementOne.getNickname()}">Matt</span>
+                                    </a>
+                                    <div class="metadata">
+                                        <span class="date" th:text="${#dates.format(statementOne.getSpeaktime(),'yyyy-MM-dd HH:mm:ss')}">今天下午 5:42</span>
+                                    </div>
+                                    <div class="text" th:text="${statementOne.getContent()}">太赞了！ </div>
+                                </div>
+                            </div>
+                        </th:block>
+                        <th:block th:if="${#arrays.length(listStatements)}==0">
+                            <h5 class=" m-opacity-small" >该会议暂无发言</h5>
+                        </th:block>
+
+                    </div>
+                </div>
+            </div>
+
+
+            <!--只有会议进行中才可以发言-->
+            <th:block th:if="(${#dates.format(new java.util.Date().getTime(), 'yyyy-MM-dd HH:mm')}>=${#dates.format(formatMeeting.getStarttime(),'yyyy-MM-dd HH:mm')}) ">
+                <th:block th:if="(${#dates.format(new java.util.Date().getTime(), 'yyyy-MM-dd HH:mm')}<=${#dates.format(formatMeeting.getEndtime(),'yyyy-MM-dd HH:mm')})">
+                    <!--文字输入区域-->
+                    <div id="statement-form" class="ui form ">
+                        <!--携带会议的id回去-->
+                        <input type="hidden" name="meeting_id" th:value="${formatMeeting.getId()}">
+                        <!--携带会议的标题回去-->
+                        <input type="hidden" name="title" th:value="${formatMeeting.getTitle()}">
+                        <div class="field required">
+                            <textarea name="content" placeholder="请输入评论……"></textarea>
+                        </div>
+
+                        <div class="ui right aligned container">
+
+                                <!--m-mobile-wide充满外部容器宽度 m-margin-tb-bottom-tine设置距离-->
+                                <!--                            <div class="field m-mobile-wide m-margin-bottom-tine required">-->
+                                <!--                                <div class="ui input left icon">-->
+                                <!--                                    <i class="user icon"></i>-->
+                                <!--                                    <input type="text" readonly="readonly" name="nickname" placeholder="姓名" class="text" th:value="${session.loginPerson}!=null ? ${session.loginPerson.getName()}">-->
+                                <!--                                </div>-->
+                                <!--                            </div>-->
+                                <!--                            <div class="field m-mobile-wide m-margin-bottom-tine required">-->
+                                <!--                                <div class="ui input left icon">-->
+                                <!--                                    <i class=" mail  icon"></i>-->
+                                <!--                                    <input type="text" readonly="readonly" name="phone"  placeholder="联系方式" class="text" th:value="${session.loginPerson}!=null ? ${session.loginPerson.getPhone()}">-->
+                                <!--                                </div>-->
+                                <!--                            </div>-->
+                                <div class="field m-mobile-wide m-margin-bottom-tine">
+                                    <button id="statementpost-btn" type="button" class="ui  teal button basic m-mobile-wide m-margin-bottom-tine"><i class="icon edit"></i>发布</button>
+                                </div>
+
+                        </div>
+                        <!--表单验证提示-->
+                        <div class="ui error message"></div>
+                    </div>
+                </th:block>
+            </th:block>
+
+
+        </div>
+    </div>
+</div>
+
+
+<!--工具条-->
+<div class="m-fixed m-right-bottom m-padded-tine">
+    <div class="ui vertical icon buttons ">
+        <!--回到最上面-->
+        <div id="toTop-button"  class="ui icon button"><i class="icon angle  up"></i></div>
+        <!--指定跳转到留言区域-->
+        <div id="toComment-button"  class="ui teal button">发言</div>
+        <!--生成微信阅读的二维码-->
+        <button class="ui weixin icon button green"><i class="weixin icon"></i></button>
+        <!--回到最下面-->
+        <div id="toFooter-button"  class="ui icon button"><i class="icon angle  down"></i></div>
+    </div>
+</div>
+
+<!--弹出的二维码-->
+<div id="qrcode" class="ui weixinCode flowing popup  transition hidden" style="width: 130px !important;">
+
+</div>
+
+
+
+
+
+<!--底部footer-->
+<footer th:insert="c_fragment :: footer"></footer>
+
+
+<th:block th:insert="c_fragment::script"></th:block>
+
+
+
+
+<script th:inline="javascript">
+
+    /*.是通过class获得按钮，当我们触发按钮的时候来取消或者添加相应的样式
+用于移动端展示目录的按钮，但是pc端没有*/
+    $('.menu-button').click(function () {
+        $('.menu-control').toggleClass('m-mobile-hide');
+    });
+
+    /*点击头像弹出注销的下拉框*/
+    $('.ui.dropdown')
+        .dropdown();
+
+    // .通过class中的属性来设置当鼠标移动到微信图标上面的时候，弹出微信的二维码
+    //先通过按钮获得弹出 然后设置要弹出的内容 设置触发的条件以及弹窗的位置
+    $('.weixin').popup({
+        popup: $('.weixinCode'),
+        position:'left center'
+    })
+
+    var serurl = "127.0.0.1:8888";
+    var url=/*[[@{/personShow/meeting/{id}(id=${formatMeeting.getId()})}]]*/"";
+    /*生成二维码插件*/
+    var qrcode = new QRCode(document.getElementById("qrcode"), {
+        text: serurl+url,
+        width: 120,
+        height: 120,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+    });
+
+
+    /*关闭消息提示框*/
+    $('.message .close')
+        .on('click', function() {
+            $(this)
+                .closest('.message')
+                .transition('fade')
+            ;
+        });
+
+    /*调用平滑滚动到顶部*/
+    $('#toTop-button').click(function () {
+        /*0表示滚动到最顶端,500用于控制速度*/
+        $(window).scrollTo(0,600);
+    });
+
+    /*调用平滑滚动到留言区域*/
+    $('#toComment-button').click(function () {
+        /*0表示滚动到最顶端,500用于控制速度*/
+        $(window).scrollTo($("#comment-container"),600);
+    });
+
+    /*调用平滑滚动到最底部*/
+    $('#toFooter-button').click(function () {
+        /*0表示滚动到最顶端,500用于控制速度*/
+        $(window).scrollTo($("#footer-container"),600);
+    });
+
+
+    /*验证内容不能为空*/
+    $('.ui.form').form({
+        fields:{
+            /*这里往上都是固定的内容*/
+            /*title表示你要限定的元素input中的name属性值*/
+            content:{
+                identifier:'content',
+                /*指定规则*/
+                rules:[{
+                    type:'empty',
+                    prompt:'请输入发言内容'
+                }]
+            },
+            nickname:{
+                identifier:'nickname',
+                /*指定规则*/
+                rules:[{
+                    type:'empty',
+                    prompt:'请输入用户名'
+                }]
+            },
+            phone:{
+                identifier:'phone',
+                /*指定规则*/
+                rules:[{
+                    type:'empty',
+                    prompt:'请输入联系方式'
+                }]
+            }
+        }
+    });
+
+    //发送评论
+    $('#statementpost-btn').click(function () {
+        var boo = $('.ui.form').form('validate form');
+        if (boo){
+            postData();
+            console.log('校验成功')
+        }else{
+            console.log('校验失败')
+        }
+
+    });
+
+    //提交评论
+    function postData() {
+        //这个是提交数据的地址
+        $("#comment-container").load(/*[[@{/personShow/statements}]]*/"/personShow/statements",{
+            "meeting_id" :$("[name='meeting_id']").val(),
+            "title" :$("[name='title']").val(),
+            // "nickname":$("[name='nickname']").val(),
+            // "phone"   :$("[name= 'phone']").val(),
+            "content" :$(" [name='content']").val()
+        },function (responseTxt,statusTxt, xhr){
+            //设置评论之后滚动到评论的最上面
+            $(window).scrollTo($("#comment-container"),600);
+            clearContent();
+        });
+    }
+    
+        
+    //回复之后清空内容
+    function clearContent() {
+        //清空内容
+        $(" [name='content']").val('');
+    }
+
+
+</script>
+</body>
+</html>

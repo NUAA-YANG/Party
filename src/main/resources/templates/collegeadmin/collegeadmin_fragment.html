@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <!--宽度等于屏幕的宽度 不缩放 便于在pc端和移动端查看  -->
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title th:replace="${title}">人员管理</title>
+    <link rel="stylesheet"  th:href="@{/lib/semanticui/dist/semantic.min.css}">
+<!--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" >-->
+    <link rel="stylesheet" href="../../static/css/me.css"  th:href="@{/css/me.css}">
+    <!--导入markdown编辑器的依赖-->
+    <link rel="stylesheet" href="../../static/lib/editormd/css/editormd.min.css" th:href="@{/lib/editormd/css/editormd.min.css}">
+    <!--导入排版的typo插件依赖-->
+    <link rel="stylesheet" href="../static/css/typo.css" th:href="@{/css/typo.css}">
+    <!--这是代码高亮的prism的插件依赖-->
+    <link rel="stylesheet" href="../static/lib/prism/prism.css" th:href="@{/lib/prism/prism.css}">
+
+</head>
+<body>
+
+<!--导航 inverted表示黑白与否 attached圆角与否 segment形成一个分段-->
+<nav th:fragment="menu(n)" class="ui inverted menu attached segment m-padded-tb-mini m-shadow-small">
+    <!--ui container和stackable是响应式容器(两个必须要一起写) -->
+
+    <div class="ui inverted menu secondary stackable">
+<!--            <img src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fku.90sjimg.com%2Felement_origin_min_pic%2F16%2F11%2F25%2F929afcf8dee77cd7a9db88d3ab94821d.jpg&refer=http%3A%2F%2Fku.90sjimg.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1646014581&t=dd7c6f139e5c698b60a975e24b7ebf07"-->
+<!--                 class=" ui image rounded" style="max-width: 5em !important;" >-->
+        <h2 class="ui red header item">智慧党建管理后台</h2>
+        <!--icon表示会隔开两个单位来放置图标 m-mobile-hide手机端的折叠目录-->
+        <a th:href="@{/admin/collegeAdmin/index}" class=" item menu-control m-mobile-hide" th:classappend="${n==1} ? 'active'"><i class="icon home"></i>主页</a>
+        <a th:href="@{/admin/collegeAdmin/newshow}" class=" item  menu-control m-mobile-hide" th:classappend="${n==2} ? 'active'"><i class="icon  book"></i>党建新闻公告</a>
+        <a th:href="@{/admin/collegeAdmin/majors}" class=" item  menu-control m-mobile-hide" th:classappend="${n==3} ? 'active'"><i class="icon sitemap "></i>下划党支部</a>
+        <a th:href="@{/admin/collegeAdmin/persons/officialM}" class=" item  menu-control m-mobile-hide" th:classappend="${n==4} ? 'active'"><i class="icon id badge"></i>党员管理</a>
+        <a th:href="@{/admin/collegeAdmin/files}" class=" item  menu-control m-mobile-hide" th:classappend="${n==5} ? 'active'"><i class="icon  folder open "></i>支部文件</a>
+        <a th:href="@{/admin/collegeAdmin/meetingShow}" class=" item  menu-control m-mobile-hide" th:classappend="${n==7} ? 'active'"><i class="icon  comment alternate "></i>三会一课</a>
+        <a th:href="@{/admin/collegeAdmin/mailShow}" class=" item  menu-control m-mobile-hide" th:classappend="${n==8} ? 'active'"><i class="icon  envelope "></i>书记信箱</a>
+        <a th:href="@{/admin/collegeAdmin/tasks}" class="item  menu-control m-mobile-hide" th:classappend="${n==9} ? 'active'"><i class="icon calendar check outline"></i>上传下达</a>
+        <a th:href="@{/admin/collegeAdmin/personalInfo}" class=" item  menu-control m-mobile-hide" th:classappend="${n==6} ? 'active'"><i class="icon address card outline"></i>个人信息</a>
+    </div>
+
+    <div class="right ui inverted menu secondary stackable">
+        <div class="ui dropdown item">
+            <div class="text">
+                <img class="ui avatar image" src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fc-ssl.duitang.com%2Fuploads%2Fitem%2F202004%2F22%2F20200422115716_mvgco.jpg&refer=http%3A%2F%2Fc-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1641542691&t=bf60fc89ecc8c8026c4f7478859cdad6"
+                     alt="">
+                [[${session.get('admin').getUsername()}]]
+            </div>
+            <!--下拉菜单-->
+            <i class="dropdown icon"></i>
+            <div class="menu">
+                <a th:href="@{/admin/logout}" class="item">注销</a>
+            </div>
+        </div>
+    </div>
+
+    <!--m-top-right按钮显示在最右上角 ；pc端的不展示按钮 手机端才展示 ; menu-button为自定义的方便jquery获得按钮，无意义-->
+    <a href="#" class="ui icon menu-button black button m-top-right m-mobile-show">
+        <i class="icon sidebar"></i>
+    </a>
+</nav>
+
+<!--二级导航 用于人员管理分类-->
+<div th:fragment="menuOne(n)" class="ui attached pointing menu">
+    <div class="ui container">
+        <div class="right menu">
+            <a th:href="@{/admin/collegeAdmin/persons/officialM}" class="item" th:classappend="${n==1} ? 'teal active'">中共党员</a>
+            <a th:href="@{/admin/collegeAdmin/persons/prepareM}" class="item" th:classappend="${n==2} ? 'teal active'">预备党员</a>
+            <a th:href="@{/admin/collegeAdmin/persons/positiveM}" class="item" th:classappend="${n==3} ? 'teal active'">积极分子</a>
+            <a th:href="@{/admin/collegeAdmin/personsChart}" class="item" th:classappend="${n==4} ? 'teal active'">数据展示</a>
+            <a th:href="@{/admin/collegeAdmin/toInfoDownload}" class="item" th:classappend="${n==5} ? 'teal active'">学院支部人员信息下载</a>
+        </div>
+    </div>
+</div>
+
+
+<div th:fragment="menuTwo(n)" class="ui attached pointing menu">
+    <div class="ui container">
+        <div class="right menu">
+            <a th:href="@{/admin/collegeAdmin/newsInput}" class="item" th:classappend="${n==1} ? 'teal active'">发布新闻</a>
+            <a th:href="@{/admin/collegeAdmin/newshow}" class="item" th:classappend="${n==2} ? 'teal active'">列表数据</a>
+            <a th:href="@{/admin/collegeAdmin/newsTree}" class="item" th:classappend="${n==3} ? 'teal active'">可视化图表</a>
+            <a th:href="@{/admin/collegeAdmin/comments}" class="item" th:classappend="${n==4} ? 'teal active'">新闻评论</a>
+        </div>
+    </div>
+</div>
+
+
+<div th:fragment="menuThree(n)" class="ui attached pointing menu">
+    <div class="ui container">
+        <div class="right menu">
+            <a th:href="@{/admin/collegeAdmin/meetingInput}" class="item" th:classappend="${n==1} ? 'teal active'">发布会议</a>
+            <a th:href="@{/admin/collegeAdmin/meetingShow}" class="item" th:classappend="${n==2} ? 'teal active'">列表数据</a>
+            <a th:href="@{/admin/collegeAdmin/statements}" class="item" th:classappend="${n==3} ? 'teal active'">会议发言</a>
+        </div>
+    </div>
+</div>
+
+
+
+<!--底部footer-->
+<footer th:fragment="footer" class="ui inverted vertical segment m-padded-tb-massive stackable">
+    <!--切分的四个模块-->
+    <div class="ui center aligned container">
+        <!--grid切分布局段落 总共可以分为16份;divided分割样式-->
+        <div class="ui inverted divided grid">
+            <div class="three wide column">
+                <img th:src="@{/images/QQCode.png}" class="ui image rounded" style="width: 115px" alt="">
+            </div>
+            <div class="four wide column">
+                <h4 class="ui inverted header">文章推荐</h4>
+                <!--默认纵向切割-->
+                <div class="ui inverted link list">
+                    <a href="#" class="item">国家主席习近平发表二O二二年新年贺词</a>
+                    <a href="#" class="item">中俄两国元首互致新年贺电</a>
+                    <a href="#" class="item">习近平:在全国政协新年茶话会上的讲话</a>
+                </div>
+            </div>
+            <div class="four wide column">
+                <h4 class="ui inverted header">负责人联系方式</h4>
+                <div class="ui inverted link list">
+                    <p  class="item">Email：yangzixian0306@163.com</p>
+                    <p  class="item">QQ：2997357856</p>
+                    <p  class="item">微信：13879786627</p>
+                </div>
+            </div>
+            <div class="five wide column">
+                <h4 class="ui inverted header">学校信息</h4>
+                <div class="ui inverted link list">
+                    <p class="item">邮编：341000</p>
+                    <p class="item">联系电话：87046485</p>
+                    <p class="item">地址：江西省南昌市青山湖区处华东交通大学</p>
+                </div>
+            </div>
+        </div>
+        <!--画线-->
+        <div class="ui inverted section divider"></div>
+        <p class="m-text-spaced m-opacity-mini">Copyright © 2021-2022 YZX Designer by YZX in ECJTU</p>
+    </div>
+</footer>
+
+
+
+<th:block th:fragment="script">
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js" th:src="@{/js/jquery-3.6.0.min.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js" th:src="@{/lib/semanticui/dist/semantic.min.js}"></script>
+    <!--可视化图表cdn-->
+    <script src="https://cdn.bootcss.com/echarts/4.6.0/echarts.min.js" th:src="@{/js/echarts.min.js}"></script>
+    <!--导入markdown的js依赖-->
+    <script src="../../static/lib/editormd/editormd.min.js" th:src="@{/lib/editormd/editormd.min.js}"></script>
+    <!--导入代码高亮的prism.css的依赖-->
+    <script src="../static/lib/prism/prism.js" th:src="@{/lib/prism/prism.js}"></script>
+</th:block>
+
+
+</body>
+</html>

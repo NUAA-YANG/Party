@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yzx.party.mapper.MeetingChartMapper">
+    <select id="findAllTop" parameterType="Integer" resultType="MeetingChart">
+        select c.id,c.name,sum(m.duration) sumtime
+        from t_colleges c,t_meetings m
+        where c.id=m.college_id group by c.id limit #{size}
+    </select>
+</mapper>

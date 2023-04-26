@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yzx.party.mapper.PersonsTableMapper">
+    <select id="findPersonsTable" resultType="PersonsTable">
+        select c.id,c.name,p.appearance,COUNT(p.appearance) countapp from
+        (select id,name from t_colleges) c,t_persons p
+        where p.college_id=c.id and c.id=#{arg0} and p.appearance=#{arg1}
+        GROUP BY p.college_id order by p.college_id
+    </select>
+
+    <select id="listCollege_id" resultType="Integer">
+        select p.college_id from t_persons p group by p.college_id
+    </select>
+
+</mapper>

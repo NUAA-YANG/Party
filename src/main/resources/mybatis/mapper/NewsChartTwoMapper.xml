@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yzx.party.mapper.NewsChartTwoMapper">
+    <!-- 用于超级管理员新闻堆叠图展示（新闻发布数量、新闻评论数量、新闻阅读数量），size表示展示几个学院-->
+    <select id="radarNews" parameterType="Integer" resultType="NewsChartTwo">
+        select one.id id,one.name,one.nums,one.viewsNum,coalesce(two.numComments,'0') commentsNum
+        from
+        (select  c.id id,c.name name,count(n.college_id) nums,sum(views) viewsNum
+        from t_colleges c,t_news n
+        where (c.id=n.college_id)
+        group by c.id limit #{size}) one
+        left outer join
+        (select colleges.id id,count(comments.id) numComments
+        from t_comments comments,t_colleges colleges
+        where colleges.id=comments.college_id
+        GROUP BY comments.college_id ) two
+        on one.id=two.id
+    </select>
+</mapper>
